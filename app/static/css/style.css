@@ -1,0 +1,84 @@
+/* app/static/css/style.css */
+
+body, html {
+    width: 100%;
+    height: 100%;
+}
+
+body, h1, h2, h3 {
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+}
+
+body {
+  margin: 0;
+}
+
+
+/* templates/base.html */
+
+ul.nav {
+  list-style-type: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+ul.nav li a {
+  display: block;
+  color: #aec251;
+  font-size: 18px;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+ul.nav li a:hover {
+  color: #687430;
+}
+
+ul.nav li a.active {background-color: #4CAF50;}
+
+ul.nav li {float: right;}
+
+ul.nav li.left {float: left;}
+
+@media screen and (max-width: 600px) {
+  ul.nav li.left,
+  ul.nav li {float: none;}
+}
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -4em;
+}
+
+/**/
+
+/* templates/home/index.html */
+
+.intro-container {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  text-align: center;
+  /* background: url(../img/intro-bg.jpg) no-repeat center center; */
+  /* background-size: cover; */
+  height: 100%;
+}
+
+.intro-message {
+  /* border: 1px solid black; */
+}
+
+.intro-message > h1 {
+  color: red;
+}
+
+.intro-divider {
+    width: 400px;
+    border-top: 1px solid #f8f8f8;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+/**/

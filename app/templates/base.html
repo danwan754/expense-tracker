@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<header>
+  <title>{{ title }} | Expense Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+</header>
+<body>
+  <ul class="nav">
+    <li class="left"><a class="brand" href="{{ url_for('home.homepage') }}">Expense Tracker</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Login</a></li>
+    <li><a href="#">Register</a></li>
+    <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
+  </ul>
+
+  <div class="wrapper">
+    {% block body %}
+    {% endblock %}
+    <div class="push"></div>
+  </div>
+
+  <footer>
+      <div class="container">
+          <div class="row">
+          </div>
+      </div>
+  </footer>
+
+</body>
+</html>
