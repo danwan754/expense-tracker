@@ -9,10 +9,15 @@
 <body>
   <ul class="nav">
     <li class="left"><a class="brand" href="{{ url_for('home.homepage') }}">Expense Tracker</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-    <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
+    {% if current_user.is_authenticated %}
+      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+      <li><a href="#">Settings</a></li>
+      <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
+    {% else %}
+      <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+      <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+      <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
+    {% endif %}
   </ul>
 
   <div class="wrapper">
