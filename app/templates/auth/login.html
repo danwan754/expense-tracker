@@ -1,0 +1,34 @@
+<!-- app/templates/auth/login.html -->
+
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<div class="content-section">
+  <h2>Login</h2>
+
+  {% with messages = get_flashed_messages() %}
+     {% if messages %}
+       {% for message in messages %}
+       <div class="flash-message">
+         {{ message }}
+         <button type="button">x</button>
+       </div>
+       {% endfor %}
+     {% endif %}
+  {% endwith %}
+  {% if error %}
+    <div class="error-message">{{ error }}</div>
+  {% endif %}
+  </br>
+  <form method="POST" >
+    {{ form.csrf_token }}
+    {{ form.email.label }} </br>
+    {{ form.email(size=60) }} </br></br>
+
+    {{ form.password.label }} </br>
+    {{ form.password(size=60) }} </br></br>
+
+    <input type="submit" value="Login">
+  </form>
+</div>
+{% endblock %}

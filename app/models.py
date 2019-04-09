@@ -17,9 +17,6 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(60), index=True, unique=True)
-    username = db.Column(db.String(60), index=True, unique=True)
-    first_name = db.Column(db.String(60), index=True)
-    last_name = db.Column(db.String(60), index=True)
     password_hash = db.Column(db.String(128))
     budget_id = db.Column(db.Integer, db.ForeignKey('budgets.id'))
     expense_id = db.Column(db.Integer, db.ForeignKey('expenses.id'))
