@@ -1,0 +1,24 @@
+
+{% block body %}
+<div class="today-expense-container">
+  <h3>Today's Expenses</h3>
+  <table class="today-expense-table">
+    <tr>
+      <th>Item</th>
+      <th>Cost</th>
+    </tr>
+
+    {% if today_expenses %}
+      {% for expense in today_expenses %}
+        <tr>
+          <td>{{ expense.item }}</td>
+          <td>{{ expense.cost }}</td>
+        </tr>
+      {% endfor %}
+    {% endif %}
+  </table>
+  {% if not today_expenses %}
+    <p>No expenses today</p>
+  {% endif %}
+</div>
+{% endblock %}

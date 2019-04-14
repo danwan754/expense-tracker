@@ -3,7 +3,12 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block body %}
-<div class="content-section">
+<div class="dashboard-section">
   <h2>This is the dashboard page.</h2>
+
+  <div class="today-expense-wrapper">
+    {% include "includes/today_expense.html" %}
+  </div>
+
 </div>
 {% endblock %}

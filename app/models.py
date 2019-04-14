@@ -92,7 +92,7 @@ class Expense(db.Model):
     item = db.Column(db.String(60))
     cost = db.Column(db.Float)
     category = db.Column(db.String(60))
-    date = db.Column(db.DateTime)
+    date = db.Column(db.Date)
 
     def __repr__(self):
         return '<Expense: {}>'.format(self.name)

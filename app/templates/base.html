@@ -12,6 +12,8 @@
     {% if current_user.is_authenticated %}
       <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
       <li><a href="#">Settings</a></li>
+      <li><a href="#">Savings</a></li>
+      <li><a href="#">Expense</a></li>
       <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
     {% else %}
       <li><a href="{{ url_for('auth.login') }}">Login</a></li>
