@@ -43,7 +43,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<User: {}>'.format(self.username)
+        return '<User: {}>'.format(self.email)
 
 
 # Set up user_loader
@@ -78,7 +78,7 @@ class Budget(db.Model):
 
 
     def __repr__(self):
-        return '<Budget: {}>'.format(self.name)
+        return '<Budget: {}>'.format(self.id)
 
 
 class Expense(db.Model):
@@ -95,4 +95,4 @@ class Expense(db.Model):
     date = db.Column(db.Date)
 
     def __repr__(self):
-        return '<Expense: {}>'.format(self.name)
+        return '<Expense: {}>'.format(self.item)

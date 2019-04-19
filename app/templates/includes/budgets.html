@@ -1,0 +1,24 @@
+{% block body %}
+<div class="budget-container">
+  <h3>Budgets Remaining</h3>
+  <table class="budget-table">
+    <tr>
+      <th>Today</th>
+      <th>Week</th>
+      <th>Month</th>
+      <th>Year</th>
+    </tr>
+    {% if budgets %}
+      <tr>
+        <td>{{ budgets.today }}</td>
+        <td>{{ budgets.week }}</td>
+        <td>{{ budgets.month }}</td>
+        <td>{{ budgets.year }}</td>
+      </tr>
+    {% endif %}
+  </table>
+  {% if not budgets %}
+    <p>No budgets set</p>
+  {% endif %}
+</div>
+{% endblock %}

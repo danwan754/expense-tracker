@@ -1,10 +1,10 @@
 # app/home/views.py
 
 from flask import render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from . import home
-from ..models import Expense
+from ..models import Expense, Budget
 
 from datetime import datetime
 
@@ -25,10 +25,13 @@ def dashboard():
 
     todayDate = datetime.now().date();
     today_expenses = Expense.query.filter_by(date=todayDate).all()
+
     # if today_expenses:
     #     print("THERE ARE EXPENSESSSSSSSSSS")
     #     print(today_expenses)
     # else:
     #     print("NO EXPENSESSSSS")
 
-    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses)
+    budgets = Budget.query.filter_by(id=current_user.budget_id).first()
+
+    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budgets=budgets)
