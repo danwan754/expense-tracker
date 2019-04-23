@@ -1,0 +1,11 @@
+{% block body %}
+<div class="savings-container">
+  <h3>Savings Available</h3>
+
+  {% if savings %}
+    <p>{{ savings }}</p>
+  {% else %}
+    <p>No savings</p>
+  {% endif %}
+</div>
+{% endblock %}

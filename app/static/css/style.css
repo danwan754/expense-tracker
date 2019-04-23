@@ -135,10 +135,17 @@ form {
   /* border: solid black 1px; */
 }
 
-.dashboard-row-1 {
+.dashboard-row {
   /* text-align: left; */
   width: 100%;
+  margin-bottom: 20px;
   /* border: solid black 1px; */
+}
+
+/* basic wrapper for a dashboard component from templates/includes */
+.dash-wrapper {
+  /* margin-top: 15px; */
+  margin-bottom: 20px;
 }
 
 .today-expense-wrapper {
@@ -241,3 +248,21 @@ form {
 }
 
 /**/
+
+
+/* /templates/includes/savings.html */
+
+.savings-container {
+  padding: 10px;
+  border-radius: 15px;
+  border: solid #d9d9d9 1px;
+}
+
+.savings-container p {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.savings-container p:first-child {
+
+}

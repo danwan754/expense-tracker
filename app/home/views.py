@@ -23,15 +23,20 @@ def dashboard():
     Render the dashboard template on the /dashboard route
     """
 
+    # get today's expenses
     todayDate = datetime.now().date();
     today_expenses = Expense.query.filter_by(date=todayDate).all()
 
-    # if today_expenses:
-    #     print("THERE ARE EXPENSESSSSSSSSSS")
-    #     print(today_expenses)
-    # else:
-    #     print("NO EXPENSESSSSS")
+    # get budget
+    budget = Budget.query.filter_by(id=current_user.budget_id).first()
 
-    budgets = Budget.query.filter_by(id=current_user.budget_id).first()
+    ## calculate year-to-date savings
+    savings = 0
+    if budget:
+        num_of_days_ytd = todayDate - budget.creation_date
+        ytd_budget = num_of_days_ytd * budget.daily
+        ytd_expense_cost = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(id=current_user.id).filter(and_(Expense.date >= budget_creation_date, Expense.date <= todayDate)).scalar()
+        if ytd_expense_cost:
+            savings = ytd_budget - ytd_expenses.total
 
-    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budgets=budgets)
+    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budget, savings=savings)

@@ -5,16 +5,20 @@
 {% block title %}Dashboard{% endblock %}
 {% block body %}
 <div class="dashboard-section">
-  <div class="dashboard-row-1">
+  <div class="dashboard-row">
     <div class="today-expense-wrapper">
       {% include "includes/today_expense.html" %}
     </div>
     <div class="budget-and-savings-wrapper">
-      {% include "includes/budgets.html" %}
-      {% include "includes/savings.html" %}
+      <div class="dash-wrapper">
+        {% include "includes/budgets.html" %}
+      </div>
+      <div class="dash-wrapper">
+        {% include "includes/savings.html" %}
+      </div>
     </div>
   </div>
-  <div class="dashboard-row-2">
+  <div class="dashboard-row">
     <div class="week-expense-wrapper">
       {% include "includes/week_expense.html" %}
     </div>

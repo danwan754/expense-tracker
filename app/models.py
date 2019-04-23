@@ -18,8 +18,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(60), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    register_date = db.Column(db.Date)
     budget_id = db.Column(db.Integer, db.ForeignKey('budgets.id'))
-    expense_id = db.Column(db.Integer, db.ForeignKey('expenses.id'))
 
 
     @property
@@ -63,18 +63,20 @@ class Budget(db.Model):
     daily = db.Column(db.Float)
     monthly = db.Column(db.Float)
     yearly = db.Column(db.Float)
-    january = db.Column(db.Float)
-    february = db.Column(db.Float)
-    march = db.Column(db.Float)
-    april = db.Column(db.Float)
-    may = db.Column(db.Float)
-    june = db.Column(db.Float)
-    july = db.Column(db.Float)
-    august = db.Column(db.Float)
-    september = db.Column(db.Float)
-    october = db.Column(db.Float)
-    november = db.Column(db.Float)
-    december = db.Column(db.Float)
+    creation_date = db.Column(db.Date)
+    modified_date = db.Column(db.Date)
+    # january = db.Column(db.Float)
+    # february = db.Column(db.Float)
+    # march = db.Column(db.Float)
+    # april = db.Column(db.Float)
+    # may = db.Column(db.Float)
+    # june = db.Column(db.Float)
+    # july = db.Column(db.Float)
+    # august = db.Column(db.Float)
+    # september = db.Column(db.Float)
+    # october = db.Column(db.Float)
+    # november = db.Column(db.Float)
+    # december = db.Column(db.Float)
 
 
     def __repr__(self):
@@ -93,6 +95,7 @@ class Expense(db.Model):
     cost = db.Column(db.Float)
     category = db.Column(db.String(60))
     date = db.Column(db.Date)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
         return '<Expense: {}>'.format(self.item)

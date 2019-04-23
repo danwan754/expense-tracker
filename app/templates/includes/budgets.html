@@ -8,16 +8,16 @@
       <th>Month</th>
       <th>Year</th>
     </tr>
-    {% if budgets %}
+    {% if budget %}
       <tr>
-        <td>{{ budgets.today }}</td>
-        <td>{{ budgets.week }}</td>
-        <td>{{ budgets.month }}</td>
-        <td>{{ budgets.year }}</td>
+        <td>{{ budget.today }}</td>
+        <td>{{ budget.week }}</td>
+        <td>{{ budget.month }}</td>
+        <td>{{ budget.year }}</td>
       </tr>
     {% endif %}
   </table>
-  {% if not budgets %}
+  {% if not budget %}
     <p>No budgets set</p>
   {% endif %}
 </div>
