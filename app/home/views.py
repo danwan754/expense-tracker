@@ -1,10 +1,12 @@
 # app/home/views.py
 
-from flask import render_template
+from flask import render_template, jsonify
 from flask_login import login_required, current_user
 
 from . import home
 from ..models import Expense, Budget
+from forms import ExpenseForm
+from .. import db
 
 from datetime import datetime
 
@@ -25,7 +27,7 @@ def dashboard():
 
     # get today's expenses
     todayDate = datetime.now().date();
-    today_expenses = Expense.query.filter_by(date=todayDate).all()
+    today_expenses = Expense.query.filter_by(date=todayDate).order_by(Expense.id.desc()).all()
 
     # get budget
     budget = Budget.query.filter_by(id=current_user.budget_id).first()
@@ -39,4 +41,30 @@ def dashboard():
         if ytd_expense_cost:
             savings = ytd_budget - ytd_expenses.total
 
-    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budget, savings=savings)
+
+    # add expense form
+    expense_form = ExpenseForm()
+
+    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budget, savings=savings, expense_form=expense_form)
+
+
+@home.route('/add-expense', methods=['POST'])
+@login_required
+def addExpense():
+    """
+    Add an expense to the expense list
+    """
+
+    form = ExpenseForm()
+    if form.validate_on_submit():
+        expense = Expense(item=form.item.data,
+                          cost=form.cost.data,
+                          category=form.category.data,
+                          date=datetime.now().date(),
+                          user_id=current_user.id)
+        db.session.add(expense)
+        db.session.commit()
+
+    resp = jsonify(success=True, item=form.item.data, cost=float(form.cost.data))
+    resp.status_code = 201
+    return resp

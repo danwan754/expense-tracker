@@ -131,20 +131,21 @@ form {
   padding: 50px 0;
   text-align: center;
   border-top: 1px solid #e7e7e7;
-
-  /* border: solid black 1px; */
 }
 
 .dashboard-row {
-  /* text-align: left; */
   width: 100%;
   margin-bottom: 20px;
-  /* border: solid black 1px; */
 }
 
 /* basic wrapper for a dashboard component from templates/includes */
 .dash-wrapper {
-  /* margin-top: 15px; */
+  padding: 10px;
+  border-radius: 15px;
+  border: solid #d9d9d9 1px;
+}
+
+.margin-down {
   margin-bottom: 20px;
 }
 
@@ -155,11 +156,47 @@ form {
   margin: 10px;
 }
 
+.today-expense-wrapper input {
+  /* float: right; */
+
+}
+
 .budget-and-savings-wrapper {
   display: inline-block;
   vertical-align: top;
   width: calc(60% - 30px);
   margin: 10px;
+}
+
+.expense-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.expense-modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+}
+
+/* close button for modals */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 /**/
@@ -168,9 +205,7 @@ form {
 /* templates/home/includes/today-expense.html */
 
 .today-expense-container {
-  padding: 10px;
-  border-radius: 15px;
-  border: solid #d9d9d9 1px;
+
 }
 
 /* .today-expense-container h3 {
@@ -183,14 +218,23 @@ form {
   margin: 0;
 }
 
-.today-expense-table th, td {
-  padding-left: 10px;
-  padding-right: 10px;
+.today-expense-table th {
+  text-align: center;
+  /* padding-bottom: 10px; */
   /* border: solid black 1px; */
 }
 
-.today-expense-table th {
-  text-align: center;
+.space-row {
+  height: 20px;
+}
+
+.today-expense-table tr {
+  border-bottom: 1px solid #cccccc;
+}
+
+.today-expense-table td {
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 /* the item name table heading */
@@ -217,9 +261,6 @@ form {
 /* /templates/includes/budgets.html */
 
 .budget-container {
-  padding: 10px;
-  border-radius: 15px;
-  border: solid #d9d9d9 1px;
 }
 
 
@@ -253,9 +294,6 @@ form {
 /* /templates/includes/savings.html */
 
 .savings-container {
-  padding: 10px;
-  border-radius: 15px;
-  border: solid #d9d9d9 1px;
 }
 
 .savings-container p {

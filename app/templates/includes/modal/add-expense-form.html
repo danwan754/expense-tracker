@@ -1,0 +1,20 @@
+<!-- /templates/includes/modal/add-expense-expense_form.html -->
+
+{% block body %}
+  <h2>Add Expense</h2>
+  </br>
+  <form id="add-expense-form" method="POST" action="/add-expense">
+    {{ expense_form.csrf_token }}
+    {{ expense_form.item.label }} </br>
+    {{ expense_form.item(size=60) }} </br></br>
+
+    {{ expense_form.cost.label }} </br>
+    {{ expense_form.cost(size=60) }} </br></br>
+
+    {{ expense_form.category.label }} </br>
+    {{ expense_form.category }} </br></br>
+
+    <input id="add-expense-submit-button" type="submit" value="Add">
+  </form>
+</div>
+{% endblock %}

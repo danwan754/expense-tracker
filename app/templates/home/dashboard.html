@@ -1,19 +1,20 @@
 <!-- app/templates/home/dashboard.html -->
-<script type=text/javascript src="{{
-  url_for('static', filename='js/dashboard.js') }}"></script>
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block body %}
 <div class="dashboard-section">
   <div class="dashboard-row">
     <div class="today-expense-wrapper">
-      {% include "includes/today_expense.html" %}
+      <div class="dash-wrapper">
+        {% include "includes/today_expense.html" %}
+        <input id="add-expense-button" type="button" value=" + ">
+      </div>
     </div>
     <div class="budget-and-savings-wrapper">
-      <div class="dash-wrapper">
+      <div class="dash-wrapper margin-down">
         {% include "includes/budgets.html" %}
       </div>
-      <div class="dash-wrapper">
+      <div class="dash-wrapper margin-down">
         {% include "includes/savings.html" %}
       </div>
     </div>
@@ -24,10 +25,14 @@
     </div>
   </div>
 
-  <div class="expense-modal">
+  <div class="expense-modal" id="expense-modal">
     <div class="expense-modal-content">
-      {% include "includes/add-expense-form.html" %}
+      <span class="close">&times;</span>
+      {% include "includes/modal/add-expense-form.html" %}
     </div>
   </div>
 </div>
+
+<script type=text/javascript src="{{
+  url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

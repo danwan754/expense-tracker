@@ -99,3 +99,17 @@ class Expense(db.Model):
 
     def __repr__(self):
         return '<Expense: {}>'.format(self.item)
+
+
+# class Category(db.Model):
+#     """
+#     Create a Category table
+#     """
+#
+#     __tablename__ = 'categories'
+#
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(60))
+#
+#     def __repr__(self):
+#         return '<Category: {}>'.format(self.name)
