@@ -27,10 +27,10 @@ def dashboard():
 
     # get today's expenses
     todayDate = datetime.now().date();
-    today_expenses = Expense.query.filter_by(date=todayDate).order_by(Expense.id.desc()).all()
+    today_expenses = Expense.query.filter_by(date=todayDate, user_id=current_user.id).order_by(Expense.id.desc()).all()
 
     # get budget
-    budget = Budget.query.filter_by(id=current_user.budget_id).first()
+    budget = Budget.query.filter_by(user_id=current_user.id).first()
 
     ## calculate year-to-date savings
     savings = 0
@@ -65,6 +65,9 @@ def addExpense():
         db.session.add(expense)
         db.session.commit()
 
-    resp = jsonify(success=True, item=form.item.data, cost=float(form.cost.data))
-    resp.status_code = 201
+        resp = jsonify(success=True, item=form.item.data, cost=float(form.cost.data))
+        resp.status_code = 201
+    else:
+        resp = jsonify(success=False, errors=form.errors)
+
     return resp

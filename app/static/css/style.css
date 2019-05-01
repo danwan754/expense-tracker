@@ -304,3 +304,12 @@ form {
 .savings-container p:first-child {
 
 }
+
+/**/
+
+
+/* /templates/includes/modal/add-expense-expense_form.html */
+
+#add-expense-error {
+  display: none;
+}

@@ -3,6 +3,8 @@
 from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 
+from datetime import datetime
+
 from . import auth
 from forms import LoginForm, RegistrationForm
 from .. import db
@@ -18,11 +20,11 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(email=form.email.data,
-                    password=form.password.data)
+                    password=form.password.data,
+                    register_date=datetime.now())
 
         # add user and to the database and create budget record
         db.session.add(user)
-        db.session.add(budget)
         db.session.commit()
         flash('You have successfully registered! You may now login.')
 

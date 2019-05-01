@@ -18,9 +18,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(60), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    register_date = db.Column(db.Date)
-    budget_id = db.Column(db.Integer, db.ForeignKey('budgets.id'))
-
+    register_date = db.Column(db.DateTime)
 
     @property
     def password(self):
@@ -65,6 +63,7 @@ class Budget(db.Model):
     yearly = db.Column(db.Float)
     creation_date = db.Column(db.Date)
     modified_date = db.Column(db.Date)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # january = db.Column(db.Float)
     # february = db.Column(db.Float)
     # march = db.Column(db.Float)

@@ -3,6 +3,7 @@
 {% block body %}
   <h2>Add Expense</h2>
   </br>
+  <div id="add-expense-error" class="error-message"></div>
   <form id="add-expense-form" method="POST" action="/add-expense">
     {{ expense_form.csrf_token }}
     {{ expense_form.item.label }} </br>

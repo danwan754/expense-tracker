@@ -26,14 +26,10 @@ span.onclick = function() {
 
 
 
-// submit new expense
-
-// add-expense-submit-button
-
-
-
+// post new expense for today and display new expense on today's expense table
 document.getElementById("add-expense-submit-button").addEventListener("click", function(event) {
   event.preventDefault();
+  var addExpenseError = document.getElementById("add-expense-error");
   var addExpenseForm = document.getElementById("add-expense-form");
 
   // post new expense
@@ -42,23 +38,30 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
 
   /* display posted expense to today's expense table */
   .then(function (response) {
-    if (response.status_code = 201) {
+    if (response.data.success) {
       var expenseTable = document.getElementsByClassName("today-expense-table")[0];
       var newRow = expenseTable.insertRow(2);
       var newCell = newRow.insertCell(0);
       newCell.innerHTML = response.data.item;
       newCell = newRow.insertCell(1);
       newCell.innerHTML = response.data.cost;
+      modal.style.display = "none";
+      addExpenseError.style.display = "none";
     }
     else {
-      console.log(response.status_code);
-
+      var errors = "";
+      for (prop in response.data.errors) {
+        for (item of response.data.errors[prop]) {
+          errors += item + "\n";
+        }
+      }
+      addExpenseError.innerHTML = errors;
+      addExpenseError.style.display = "block";
     }
   })
   .catch(function (error) {
     console.log(error);
-  })
-  .then(function () {
-    modal.style.display = "none";
+    addExpenseError.innerHTML = error;
+    addExpenseError.style.display = "block";
   });
 });

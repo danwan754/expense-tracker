@@ -10,7 +10,7 @@ class ExpenseForm(FlaskForm):
     """
     Form for adding an expense
     """
-    item = StringField('Item', validators=[DataRequired()])
-    cost = DecimalField('Cost', validators=[DataRequired()])
+    item = StringField('Item', validators=[DataRequired("Item is required.")])
+    cost = DecimalField('Cost', validators=[DataRequired("Cost is required.")])
     category = SelectField('Category', choices=[("1", "one"), ("2", "two")])
     submit = SubmitField('Add')
