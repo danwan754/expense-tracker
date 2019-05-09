@@ -3,6 +3,7 @@
 # third-party imports
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import logging
 
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -14,6 +15,11 @@ from config import app_config
 db = SQLAlchemy()
 
 login_manager = LoginManager()
+
+# stop sqlalchemy output in terminal
+sqla_logger = logging.getLogger('sqlalchemy')
+sqla_logger.propagate = False
+sqla_logger.addHandler(logging.FileHandler('/path/to/sqla.log'))
 
 
 def create_app(config_name):

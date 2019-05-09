@@ -10,10 +10,10 @@
     </tr>
     {% if budget %}
       <tr>
-        <td>{{ budget.today }}</td>
-        <td>{{ budget.week }}</td>
-        <td>{{ budget.month }}</td>
-        <td>{{ budget.year }}</td>
+        <td id="budget-daily">{{ budget.today }}</td>
+        <td id="budget-weekly">{{ budget.week }}</td>
+        <td id="budget-monthly">{{ budget.month }}</td>
+        <td id="budget-yearly">{{ budget.year }}</td>
       </tr>
     {% endif %}
   </table>

@@ -35,9 +35,9 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
   // post new expense
   var data = new FormData(addExpenseForm);
   axios.post('/add-expense', data)
+  .then(function(response) {
 
-  /* display posted expense to today's expense table */
-  .then(function (response) {
+    // display posted expense to today's expense table
     if (response.data.success) {
       var expenseTable = document.getElementsByClassName("today-expense-table")[0];
       var newRow = expenseTable.insertRow(2);
@@ -59,9 +59,26 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
       addExpenseError.style.display = "block";
     }
   })
-  .catch(function (error) {
+  .catch(function(error) {
     console.log(error);
     addExpenseError.innerHTML = error;
     addExpenseError.style.display = "block";
   });
 });
+
+
+// post budgets
+document.getElementById('edit-budget-button').addEvenListener('click', function(event) {
+  event.preventDefault();
+  var budgetError = document.getElementById('budget-error');
+  var budgetForm = document.getElementById("edit-budget-form");
+  var data = new FormData(budgetForm);
+  axios.post('/edit-budget', data)
+  .then(function(response) {
+
+    // display the budgets
+    if (response.data.success) {
+      document.getElementById('budget-daily').innerHTML = 
+    }
+  })
+})

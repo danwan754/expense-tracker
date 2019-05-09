@@ -5,8 +5,12 @@ from flask_login import login_required, current_user
 
 from . import home
 from ..models import Expense, Budget
-from forms import ExpenseForm
+from forms import ExpenseForm, BudgetForm
 from .. import db
+from ..app_processes import getTodayBudgetRemaining,
+                            getWeekBudgetRemaining
+                            getMonthBudgetRemaining,
+                            getWeekBudgetRemaining
 
 from datetime import datetime
 
@@ -69,5 +73,39 @@ def addExpense():
         resp.status_code = 201
     else:
         resp = jsonify(success=False, errors=form.errors)
+
+    return resp
+
+
+@home.route('/edit-budget', methods=['POST'])
+@login_required
+def editBudget():
+    """
+    Edit budgets
+    """
+
+    form = BudgetForm()
+    if form.validate_on_submit():
+        budget = Budget.query.filter_by(user_id=current_user.id).first()
+        budget.daily = form.daily
+        budget.weekly = form.weekly
+        budget.monthly = form.monthly
+        budget.yearly = form.yearly
+        db.session.add(budget)
+        db.session.commit()
+
+        # get the remaining budgets
+        todayBudgetRemain = getTodayBudgetRemaining(budget, current_user.id)
+        weekBudgetRemain = getWeekBudgetRemaining(budget, current_user.id)
+        monthBudgetRemain = getMonthBudgetRemaining(budget, current_user.id)
+        yearBudgetRemain = getYearBudgetRemaining(budget, current_user.id)
+
+        resp = jsonify(success=True,
+                       today=todayBudgetRemain,
+                       week=getWeekBudgetRemaining,
+                       month=getMonthBudgetRemaining,
+                       year=getYearBudgetRemaining)
+    else:
+        resp = jsonify(sucess=False)
 
     return resp

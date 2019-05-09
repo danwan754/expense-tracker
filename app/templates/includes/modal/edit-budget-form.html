@@ -1,0 +1,24 @@
+<!-- /templates/includes/modal/edit-budget-form.html -->
+
+{% block body %}
+  <h2>Edit Budget</h2>
+  </br>
+  <div id="budget-error" class="error-message"></div>
+  <form id="edit-budget-form" method="POST">
+    {{ budget_form.csrf_token }}
+    {{ budget_form.daily.label }} </br>
+    {{ budget_form.daily(size=60) }} </br></br>
+
+    {{ budget_form.weekly.label }} </br>
+    {{ budget_form.weekly(size=60) }} </br></br>
+
+    {{ budget_form.monthly.label }} </br>
+    {{ budget_form.monthly(size=60) }} </br></br>
+
+    {{ budget_form.yearly.label }} </br>
+    {{ budget_form.yearly(size=60) }} </br></br>
+
+    <input id="add-expense-submit-button" type="submit" value="Add">
+  </form>
+</div>
+{% endblock %}
