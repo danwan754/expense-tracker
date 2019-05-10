@@ -3,22 +3,21 @@
 {% block body %}
   <h2>Edit Budget</h2>
   </br>
-  <div id="budget-error" class="error-message"></div>
+  <div id="edit-budget-error" class="error-message"></div>
   <form id="edit-budget-form" method="POST">
-    {{ budget_form.csrf_token }}
-    {{ budget_form.daily.label }} </br>
-    {{ budget_form.daily(size=60) }} </br></br>
+    {{ budgetForm.csrf_token }}
+    {{ budgetForm.daily.label }} </br>
+    {{ budgetForm.daily(size=60) }} </br></br>
 
-    {{ budget_form.weekly.label }} </br>
-    {{ budget_form.weekly(size=60) }} </br></br>
+    {{ budgetForm.weekly.label }} </br>
+    {{ budgetForm.weekly(size=60) }} </br></br>
 
-    {{ budget_form.monthly.label }} </br>
-    {{ budget_form.monthly(size=60) }} </br></br>
+    {{ budgetForm.monthly.label }} </br>
+    {{ budgetForm.monthly(size=60) }} </br></br>
 
-    {{ budget_form.yearly.label }} </br>
-    {{ budget_form.yearly(size=60) }} </br></br>
+    {{ budgetForm.yearly.label }} </br>
+    {{ budgetForm.yearly(size=60) }} </br></br>
 
-    <input id="add-expense-submit-button" type="submit" value="Add">
+    <input id="edit-budget-submit-button" type="submit" value="Add">
   </form>
-</div>
 {% endblock %}

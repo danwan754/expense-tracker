@@ -1,8 +1,9 @@
-from ..models import Expense, Budget
-from .. import db
+from models import Expense, Budget
+from . import db
 
 from datetime import datetime
-from calendar import monthrange, isLeap
+from calendar import monthrange, isleap
+from sqlalchemy.sql import func
 
 
 def getTodayBudgetRemaining(budget, id):
@@ -16,7 +17,7 @@ def getTodayBudgetRemaining(budget, id):
 
     todayDate = datetime.now().date
 
-    todayExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(_and(user_id=id, Expense.date == todayDate)).scalar()
+    todayExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(Expense.user_id==id, Expense.date==todayDate).scalar()
 
     # remaining budget for today
     todayBudgetRemain = budget.daily - todayExpenses
@@ -75,7 +76,7 @@ def getMonthBudgetRemaining(budget, id):
     todayMonth = todayDate.month()
     todayYear = todayDate.year()
 
-    totalMonthExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date.month()=todayMonth).scalar()
+    totalMonthExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date.month()==todayMonth).scalar()
 
     # number of days in this month
     numDays = monthrange(todayYear, todayMonth)
@@ -100,9 +101,9 @@ def getYearBudgetRemaining(budget, id):
     todayYear = todayDate.year()
     numDaysInYear = 365
 
-    totalYearExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(_and(Expense.date.year() = todayYear))
+    totalYearExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date.year()==todayYear).scalar()
 
-    if (isLeap(todayYear)):
+    if (isleap(todayYear)):
         numDaysInYear = 366
 
     yearBudget = budget.daily * numDaysInYear
@@ -112,7 +113,30 @@ def getYearBudgetRemaining(budget, id):
     return yearBudgetRemain
 
 
-    
+def getAllBudgetsRemaining(budget, id):
+
+    """
+    Param:
+        budget: A Budget object.
+        id: user ID.
+    Returns the remaining budgets in dictionary like: {'today': [value], 'week': [value], 'month': [value], 'year': [value]}
+    """
+
+    # get the remaining budgets
+    todayBudgetRemain = getTodayBudgetRemaining(budget, id)
+    weekBudgetRemain = getWeekBudgetRemaining(budget, id)
+    monthBudgetRemain = getMonthBudgetRemaining(budget, id)
+    yearBudgetRemain = getYearBudgetRemaining(budget, id)
+
+    allBudgetsRemain = {'today': todayBudgetRemain,
+                        'week': weekBudgetRemain,
+                        'month': monthBudgetRemain,
+                        'year': yearBudgetRemain}
+
+    return allBudgetsRemain
+
+
+
 # # sum of expenses for each day
 # dailyExpensesList = Expense.query.with_entities(Expense.date, func.sum(Expense.cost)).group_by(Expense.date).order_by(Expense.date.desc()).all()
 

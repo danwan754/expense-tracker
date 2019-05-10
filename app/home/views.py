@@ -7,10 +7,7 @@ from . import home
 from ..models import Expense, Budget
 from forms import ExpenseForm, BudgetForm
 from .. import db
-from ..app_processes import getTodayBudgetRemaining,
-                            getWeekBudgetRemaining
-                            getMonthBudgetRemaining,
-                            getWeekBudgetRemaining
+from ..app_processes import getAllBudgetsRemaining
 
 from datetime import datetime
 
@@ -36,6 +33,12 @@ def dashboard():
     # get budget
     budget = Budget.query.filter_by(user_id=current_user.id).first()
 
+    budgetsRemaining = None
+
+    # get the remaining budgets
+    if budget:
+        budgetsRemaining = getAllBudgetsRemaining(budget, current_user.id)
+
     ## calculate year-to-date savings
     savings = 0
     if budget:
@@ -46,17 +49,17 @@ def dashboard():
             savings = ytd_budget - ytd_expenses.total
 
 
-    # add expense form
-    expense_form = ExpenseForm()
+    expenseForm = ExpenseForm()
+    budgetForm = BudgetForm()
 
-    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budget, savings=savings, expense_form=expense_form)
+    return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budgetsRemaining, savings=savings, expenseForm=expenseForm, budgetForm=budgetForm)
 
 
 @home.route('/add-expense', methods=['POST'])
 @login_required
 def addExpense():
     """
-    Add an expense to the expense list
+    Add an expense for today.
     """
 
     form = ExpenseForm()
@@ -81,7 +84,7 @@ def addExpense():
 @login_required
 def editBudget():
     """
-    Edit budgets
+    Edit budgets and return the recalculated remaining budgets.
     """
 
     form = BudgetForm()
@@ -95,16 +98,10 @@ def editBudget():
         db.session.commit()
 
         # get the remaining budgets
-        todayBudgetRemain = getTodayBudgetRemaining(budget, current_user.id)
-        weekBudgetRemain = getWeekBudgetRemaining(budget, current_user.id)
-        monthBudgetRemain = getMonthBudgetRemaining(budget, current_user.id)
-        yearBudgetRemain = getYearBudgetRemaining(budget, current_user.id)
+        budgetsRemaining = getAllBudgetsRemaining(budget, current_user.id)
 
         resp = jsonify(success=True,
-                       today=todayBudgetRemain,
-                       week=getWeekBudgetRemaining,
-                       month=getMonthBudgetRemaining,
-                       year=getYearBudgetRemaining)
+                       budget=budgetsRemaining)
     else:
         resp = jsonify(sucess=False)
 

@@ -26,10 +26,17 @@
     </div>
   </div>
 
-  <div class="expense-modal" id="expense-modal">
-    <div class="expense-modal-content">
-      <span class="close">&times;</span>
+  <div class="form-modal" id="add-expense-modal">
+    <div class="form-modal-content">
+      <span id="close-add-expense" class="close">&times;</span>
       {% include "includes/modal/add-expense-form.html" %}
+    </div>
+  </div>
+
+  <div class="form-modal" id="edit-budget-modal">
+    <div class="form-modal-content">
+      <span id="close-edit-budget" class="close">&times;</span>
+      {% include "includes/modal/edit-budget-form.html" %}
     </div>
   </div>
 </div>

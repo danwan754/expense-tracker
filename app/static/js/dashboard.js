@@ -1,21 +1,34 @@
-// Get the modal
-var modal = document.getElementById('expense-modal');
 
-// Get the button that opens the modal
-var btn = document.getElementById("add-expense-button");
+var addExpenseModal = document.getElementById('add-expense-modal');
+var editBudgetModal = document.getElementById('edit-budget-modal');
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+// buttons that opens the add-expense and edit-budget modals
+var addExpenseBtn = document.getElementById("add-expense-button");
+var editBudgetBtn = document.getElementById("edit-budget-button");
 
-// When the user clicks the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
+// <span> elements that closes the modals
+var closeAddExpense = document.getElementById("close-add-expense");
+var closeEditBudget = document.getElementById("close-edit-budget");
+
+// open the modals
+addExpenseBtn.onclick = function() {
+  addExpenseModal.style.display = "block";
 }
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
+editBudgetBtn.onclick = function() {
+  editBudgetModal.style.display = "block";
 }
+
+// close the modals
+closeAddExpense.onclick = function() {
+  addExpenseModal.style.display = "none";
+}
+
+closeEditBudget.onclick = function() {
+  editBudgetModal.style.display = "none";
+}
+
+
 
 // // When the user clicks anywhere outside of the modal, close it
 // window.onclick = function(event) {
@@ -45,7 +58,7 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
       newCell.innerHTML = response.data.item;
       newCell = newRow.insertCell(1);
       newCell.innerHTML = response.data.cost;
-      modal.style.display = "none";
+      addExpenseModal.style.display = "none";
       addExpenseError.style.display = "none";
     }
     else {
@@ -68,7 +81,7 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
 
 
 // post budgets
-document.getElementById('edit-budget-button').addEvenListener('click', function(event) {
+document.getElementById('edit-budget-button').addEventListener('click', function(event) {
   event.preventDefault();
   var budgetError = document.getElementById('budget-error');
   var budgetForm = document.getElementById("edit-budget-form");
@@ -78,7 +91,10 @@ document.getElementById('edit-budget-button').addEvenListener('click', function(
 
     // display the budgets
     if (response.data.success) {
-      document.getElementById('budget-daily').innerHTML = 
+      document.getElementById('budget-daily').innerHTML = response.data.budget.daily;
+      document.getElementById('budget-weekly').innerHTML = response.data.budget.weekly;
+      document.getElementById('budget-monthly').innerHTML = response.data.budget.monthly;
+      document.getElementById('budget-yearly').innerHTML = response.data.budget.yearly;
     }
-  })
-})
+  });
+});
