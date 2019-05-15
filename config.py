@@ -1,11 +1,21 @@
-# config.py
+import os
+
 
 class Config(object):
     """
     Common configurations
     """
 
-    # Put any configurations here that are common across all environments
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # default database is sqlite
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+
+    # default secret key
+    SECRET_KEY = "test"
+
 
 
 class DevelopmentConfig(Config):
@@ -23,6 +33,7 @@ class ProductionConfig(Config):
     """
 
     DEBUG = False
+
 
 app_config = {
     'development': DevelopmentConfig,
