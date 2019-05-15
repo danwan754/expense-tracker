@@ -16,3 +16,13 @@ Store and look up previous expenses
 ### View Analytics
 Get insights on what your expenses are going into
 
+
+## Setup
+
+Run the expense-tracker application by running these sequence of commands:
+
+```
+git clone https://github.com/danwan754/expense-tracker.git
+source setup.sh
+flask run
+```
