@@ -1,5 +1,7 @@
 # expense-tracker
 
+(work in progress)
+
 This web-app allows the user to create budgets and track all their expenses.
 
 
@@ -19,7 +21,7 @@ Get insights on what your expenses are going into
 
 ## Setup
 
-Run the expense-tracker application by running these sequence of commands:
+Run these commands to start up the app:
 
 ```
 git clone https://github.com/danwan754/expense-tracker.git
