@@ -317,3 +317,35 @@ form {
 #edit-budget-error {
   display: none;
 }
+
+/***/
+
+
+/* common styling */
+
+
+
+.right-side-button {
+  width: 10%;
+  margin-left: auto;
+  margin-right: 0;
+  padding-right: 5px;
+  padding-top: 10px;
+}
+
+.round-button {
+  width: 100%;
+  height:0;
+  padding-bottom: 100%;
+  border-radius: 50%;
+  border:2px solid #cfdcec;
+  overflow:hidden;
+
+  background: #f2f2f2;
+
+
+}
+
+.round-button:hover {
+  background: #cccccc;
+}
