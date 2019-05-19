@@ -81,7 +81,7 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
 
 
 // post budgets
-document.getElementById('edit-budget-button').addEventListener('click', function(event) {
+document.getElementById('edit-budget-submit-button').addEventListener('click', function(event) {
   event.preventDefault();
   var budgetError = document.getElementById('budget-error');
   var budgetForm = document.getElementById("edit-budget-form");
