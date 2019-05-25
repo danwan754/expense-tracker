@@ -24,8 +24,13 @@ login_manager = LoginManager()
 
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
+
+    # load initial config from ../config.py
     app.config.from_object(app_config[config_name])
-    app.config.from_pyfile('config.py')
+
+    # load config from ../instance/config.py if exists
+    app.config.from_pyfile('config.py', silent=True)
+
     db.init_app(app)
 
     login_manager.init_app(app)
