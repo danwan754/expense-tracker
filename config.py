@@ -5,7 +5,8 @@ class Config(object):
     Common configurations
     """
 
-    # Put any configurations here that are common across all environments
+    DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):
@@ -13,7 +14,6 @@ class DevelopmentConfig(Config):
     Development configurations
     """
 
-    DEBUG = True
     SQLALCHEMY_ECHO = True
 
 
@@ -24,7 +24,18 @@ class ProductionConfig(Config):
 
     DEBUG = False
 
+
+class TestingConfig(Config):
+    """
+    Testing configurations
+    """
+
+    TESTING = True
+    WTF_CSRF_ENABLED = False
+
+
 app_config = {
     'development': DevelopmentConfig,
-    'production': ProductionConfig
+    'production': ProductionConfig,
+    'testing': TestingConfig
 }

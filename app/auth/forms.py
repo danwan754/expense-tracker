@@ -11,18 +11,20 @@ class RegistrationForm(FlaskForm):
     """
     Form for users to create new account
     """
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[DataRequired('Email required.'), Email()])
     password = PasswordField('Password', validators=[
-                                        DataRequired(),
+                                        DataRequired('Password required.'),
                                         EqualTo('confirm_password')
                                         ])
-    confirm_password = PasswordField('Confirm Password')
+    confirm_password = PasswordField('Confirm Password', validators=[
+                                    DataRequired('Confirm password required.')
+                                    ])
     submit = SubmitField('Register')
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email is already in use.')
-            
+
 
 class LoginForm(FlaskForm):
     """

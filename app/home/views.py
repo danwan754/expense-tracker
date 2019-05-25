@@ -2,6 +2,7 @@
 
 from flask import render_template, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy.sql import func
 
 from . import home
 from ..models import Expense, Budget
@@ -9,7 +10,7 @@ from forms import ExpenseForm, BudgetForm
 from .. import db
 from ..app_processes import getAllBudgetsRemaining
 
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 @home.route('/')
 def homepage():
@@ -27,8 +28,8 @@ def dashboard():
     """
 
     # get today's expenses
-    todayDate = datetime.now().date();
-    today_expenses = Expense.query.filter_by(date=todayDate, user_id=current_user.id).order_by(Expense.id.desc()).all()
+    todayDate = date.today()
+    today_expenses = Expense.query.filter(Expense.date==todayDate, Expense.user_id==current_user.id).order_by(Expense.id.desc()).all()
 
     # get budget
     budget = Budget.query.filter_by(user_id=current_user.id).first()
@@ -43,10 +44,10 @@ def dashboard():
     savings = 0
     if budget:
         num_of_days_ytd = todayDate - budget.creation_date
-        ytd_budget = num_of_days_ytd * budget.daily
-        ytd_expense_cost = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(id=current_user.id).filter(and_(Expense.date >= budget_creation_date, Expense.date <= todayDate)).scalar()
-        if ytd_expense_cost:
-            savings = ytd_budget - ytd_expenses.total
+        ytd_budget = num_of_days_ytd.days * budget.daily
+        ytd_expenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(Expense.user_id==current_user.id, Expense.date >= budget.creation_date, Expense.date <= todayDate).scalar()
+        if ytd_expenses:
+            savings = ytd_budget - ytd_expenses
 
 
     expenseForm = ExpenseForm()
@@ -67,7 +68,7 @@ def addExpense():
         expense = Expense(item=form.item.data,
                           cost=form.cost.data,
                           category=form.category.data,
-                          date=datetime.now().date(),
+                          date=date.today(),
                           user_id=current_user.id)
         db.session.add(expense)
         db.session.commit()
@@ -90,10 +91,15 @@ def editBudget():
     form = BudgetForm()
     if form.validate_on_submit():
         budget = Budget.query.filter_by(user_id=current_user.id).first()
-        budget.daily = form.daily
-        budget.weekly = form.weekly
-        budget.monthly = form.monthly
-        budget.yearly = form.yearly
+
+        if not budget:
+            budget = Budget(user_id=current_user.id)
+            budget.creation_date = date.today()
+
+        budget.daily = form.data["daily"]
+        budget.weekly = form.data["weekly"]
+        budget.monthly = form.data["monthly"]
+        budget.yearly = form.data["yearly"]
         db.session.add(budget)
         db.session.commit()
 
