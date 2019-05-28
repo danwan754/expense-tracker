@@ -1,7 +1,7 @@
 from models import Expense, Budget
 from . import db
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from calendar import monthrange, isleap
 from sqlalchemy.sql import func
 
@@ -80,13 +80,20 @@ def getMonthBudgetRemaining(budget, id):
     """
 
     todayDate = datetime.now().date()
-    todayMonth = todayDate.month()
-    todayYear = todayDate.year()
-
-    totalMonthExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date.month()==todayMonth).scalar()
+    todayMonth = todayDate.month
+    todayYear = todayDate.year
 
     # number of days in this month
-    numDays = monthrange(todayYear, todayMonth)
+    numDays = monthrange(todayYear, todayMonth)[1]
+
+    firstDateOfMonth = date(todayYear, todayMonth, 1)
+    lastDateOfMonth = date(todayYear, todayMonth, numDays)
+
+    totalMonthExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date >= firstDateOfMonth, Expense.date <= lastDateOfMonth).scalar()
+
+    if not totalMonthExpenses:
+        totalMonthExpenses = 0
+
 
     monthBudget = budget.daily * numDays
 

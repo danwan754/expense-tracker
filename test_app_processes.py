@@ -2,7 +2,8 @@
 
 import unittest
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from calendar import monthrange
 
 from flask_testing import TestCase
 from flask import abort, url_for
@@ -86,6 +87,8 @@ class TestAppProcesses(TestBase):
 class TestGetTodayBudgetRemaining(TestAppProcesses):
 
     dailyBudget = 50
+    cost1 = 2.50
+    cost2 = 12.50
 
     def test_getTodayBudgetRemaining_with_no_expenses(self):
         """
@@ -94,11 +97,10 @@ class TestGetTodayBudgetRemaining(TestAppProcesses):
         """
 
         expected = self.dailyBudget
-        cost = 2.50
         date = datetime.now().date() - timedelta(days=1)
 
         budget = self.create_budget(self.user_id, self.dailyBudget, datetime.now().date())
-        self.create_and_save_expense(self.user_id, "coffee", cost, "Food", date)
+        self.create_and_save_expense(self.user_id, "coffee", self.cost1, "Food", date)
 
         todayBudgetRemaining = app_processes.getTodayBudgetRemaining(budget, self.user_id)
         self.assertEqual(todayBudgetRemaining, expected)
@@ -110,16 +112,14 @@ class TestGetTodayBudgetRemaining(TestAppProcesses):
         today
         """
 
-        cost1 = 2.50
-        cost2 = 12.25
         date = datetime.now().date()
 
-        # expected = 50 - 2.50 - 12.25 = 35.25
-        expected = self.dailyBudget - cost1 - cost2
+        # expected = 50 - 2.50 - 12.50 = 35.00
+        expected = self.dailyBudget - self.cost1 - self.cost2
 
         budget = self.create_budget(self.user_id, self.dailyBudget, datetime.now().date())
-        self.create_and_save_expense(self.user_id, "coffee", cost1, "Food", date)
-        self.create_and_save_expense(self.user_id, "lunch", cost2, "Food", date)
+        self.create_and_save_expense(self.user_id, "coffee", self.cost1, "Food", date)
+        self.create_and_save_expense(self.user_id, "lunch", self.cost2, "Food", date)
 
         todayBudgetRemaining = app_processes.getTodayBudgetRemaining(budget, self.user_id)
         self.assertEqual(todayBudgetRemaining, expected)
@@ -131,7 +131,7 @@ class TestGetWeekRemainingBudget(TestAppProcesses):
     dailyBudget = 50
     weekBudget = dailyBudget * 7
     cost1 = 2.50
-    cost2 = 12.25
+    cost2 = 12.50
 
     def test_getWeekBudgetRemaining_with_today_as_start_of_week(self):
         """
@@ -173,7 +173,7 @@ class TestGetWeekRemainingBudget(TestAppProcesses):
         budgetCreationDate = date2
 
 
-        # expected = 50 - 2.50 - 12.25 = 35.25
+        # expected = 50 - 2.50 - 12.50 = 35.00
         expected = self.weekBudget - self.cost1 - self.cost2
 
         budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
@@ -182,6 +182,73 @@ class TestGetWeekRemainingBudget(TestAppProcesses):
 
         weekBudgetRemaining = app_processes.getWeekBudgetRemaining(budget, self.user_id)
         self.assertEqual(weekBudgetRemaining, expected)
+
+
+    def test_getWeekBudgetRemaining_with_last_seven_days_ago_as_start_of_week(self):
+        """
+        Test that this week's remaining budget is correct with the start of week
+        being 7 days ago and expenses exists 7 days ago and within 6 days ago.
+        Only expenses within the last 6 days and today should determine budget remaining.
+        """
+
+        date1 = datetime.now().date() # included
+        date2 = date1 - timedelta(days=1) # included
+        date3 = date1 - timedelta(days=6) # included
+        date4 = date1 - timedelta(days=7) # not included
+        budgetCreationDate = date3
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+        self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", date1)
+        self.create_and_save_expense(self.user_id, "item2", self.cost1, "category", date2)
+        self.create_and_save_expense(self.user_id, "item3", self.cost1, "category", date3)
+        self.create_and_save_expense(self.user_id, "item4", self.cost1, "category", date4)
+
+        # expected = 350 - 2.50 * 3 = 342.50
+        expected = self.weekBudget - self.cost1 * 3
+
+        weekBudgetRemaining = app_processes.getWeekBudgetRemaining(budget, self.user_id)
+        self.assertEqual(weekBudgetRemaining, expected)
+
+
+
+class TestGetMonthBudgetRemaining(TestAppProcesses):
+
+    todayDate = datetime.now().date()
+    dailyBudget = 50
+    monthBudget = dailyBudget * monthrange(todayDate.year, todayDate.month)[1]
+    cost1 = 2.50
+
+
+
+    def test_getMonthBudgetRemaining_with_no_expenses_this_month(self):
+        """
+        Test that this month's remaining budget is full available with no expenses
+        this month, but expenses exists for previous month
+        """
+
+        todayDate = datetime.now().date()
+        thisMonth = todayDate.month
+        prevMonth = None
+
+        if thisMonth == 1:
+            prevMonth = 12
+        else:
+            prevMonth = thisMonth - 1
+
+        prevMonthDate = date(todayDate.year, prevMonth, 15)
+
+        # budgetCreationDate is arbitrary
+        budgetCreationDate = prevMonthDate
+
+        expected = self.monthBudget - self.cost1
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+        self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", prevMonthDate)
+        self.create_and_save_expense(self.user_id, "item2", self.cost1, "category", todayDate)
+
+        monthBudgetRemaining = app_processes.getMonthBudgetRemaining(budget, self.user_id)
+        self.assertEqual(monthBudgetRemaining, expected)
+
 
 
 if __name__ == '__main__':
