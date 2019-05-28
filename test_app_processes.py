@@ -217,7 +217,17 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
     dailyBudget = 50
     monthBudget = dailyBudget * monthrange(todayDate.year, todayDate.month)[1]
     cost1 = 2.50
+    thisMonth = todayDate.month
 
+    if thisMonth == 1:
+        prevMonth = 12
+    else:
+        prevMonth = thisMonth - 1
+
+    prevMonthDate = date(todayDate.year, prevMonth, 15)
+
+    # budgetCreationDate is arbitrary
+    budgetCreationDate = prevMonthDate
 
 
     def test_getMonthBudgetRemaining_with_no_expenses_this_month(self):
@@ -226,29 +236,38 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
         this month, but expenses exists for previous month
         """
 
-        todayDate = datetime.now().date()
-        thisMonth = todayDate.month
-        prevMonth = None
+        expected = self.monthBudget
 
-        if thisMonth == 1:
-            prevMonth = 12
-        else:
-            prevMonth = thisMonth - 1
-
-        prevMonthDate = date(todayDate.year, prevMonth, 15)
-
-        # budgetCreationDate is arbitrary
-        budgetCreationDate = prevMonthDate
-
-        expected = self.monthBudget - self.cost1
-
-        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
-        self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", prevMonthDate)
-        self.create_and_save_expense(self.user_id, "item2", self.cost1, "category", todayDate)
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+        self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", self.prevMonthDate)
 
         monthBudgetRemaining = app_processes.getMonthBudgetRemaining(budget, self.user_id)
         self.assertEqual(monthBudgetRemaining, expected)
 
+
+
+    def test_getMonthBudgetRemaining_with_expenses_this_month(self):
+        """
+        Test that this month's remaining budget is correct with an expense
+        this month, but expenses exists for previous month as well.
+        Only this month's expense should determine the remaining budget.
+        """
+
+        expected = self.monthBudget - self.cost1
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+        self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", self.prevMonthDate)
+        self.create_and_save_expense(self.user_id, "item2", self.cost1, "category", self.todayDate)
+
+        monthBudgetRemaining = app_processes.getMonthBudgetRemaining(budget, self.user_id)
+        self.assertEqual(monthBudgetRemaining, expected)
+
+
+#
+# class TestGetYearBudgetRemaining(TestAppProcesses):
+#
+#
+#     def test_getYearBudgetRemaining_with
 
 
 if __name__ == '__main__':
