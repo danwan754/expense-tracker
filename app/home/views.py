@@ -42,12 +42,12 @@ def dashboard():
 
     ## calculate year-to-date savings
     savings = 0
-    if budget:
-        num_of_days_ytd = todayDate - budget.creation_date
-        ytd_budget = num_of_days_ytd.days * budget.daily
-        ytd_expenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(Expense.user_id==current_user.id, Expense.date >= budget.creation_date, Expense.date <= todayDate).scalar()
-        if ytd_expenses:
-            savings = ytd_budget - ytd_expenses
+    # if budget:
+    #     num_of_days_ytd = todayDate - budget.creation_date
+    #     ytd_budget = num_of_days_ytd.days * budget.daily
+    #     ytd_expenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(Expense.user_id==current_user.id, Expense.date >= budget.creation_date, Expense.date <= todayDate).scalar()
+    #     if ytd_expenses:
+    #         savings = ytd_budget - ytd_expenses
 
 
     expenseForm = ExpenseForm()
@@ -99,7 +99,7 @@ def editBudget():
         budget.daily = form.data["daily"]
         budget.weekly = form.data["weekly"]
         budget.monthly = form.data["monthly"]
-        budget.yearly = form.data["yearly"]
+        # budget.yearly = form.data["yearly"]
         db.session.add(budget)
         db.session.commit()
 

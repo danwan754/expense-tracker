@@ -6,14 +6,14 @@
       <th>Today</th>
       <th>Week</th>
       <th>Month</th>
-      <th>Year</th>
+
     </tr>
     {% if budget %}
       <tr>
         <td id="budget-daily">{{ budget.today }}</td>
         <td id="budget-weekly">{{ budget.week }}</td>
         <td id="budget-monthly">{{ budget.month }}</td>
-        <td id="budget-yearly">{{ budget.year }}</td>
+
       </tr>
     {% endif %}
   </table>
@@ -30,3 +30,6 @@
 <!-- <div class="right-button-wrapper">
   <input id="edit-budget-button" type="button" value=" + ">
 </div> -->
+
+      <!-- <th>Year</th> -->
+<!-- <td id="budget-yearly">{{ budget.year }}</td> -->

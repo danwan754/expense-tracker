@@ -94,6 +94,10 @@ def getMonthBudgetRemaining(budget, id):
     if not totalMonthExpenses:
         totalMonthExpenses = 0
 
+    # if budget created this month, calculate the correct budget for this month
+    if budget.creation_date.month == todayMonth:
+        timeDiff = lastDateOfMonth - budget.creation_date
+        numDays = timeDiff.days
 
     monthBudget = budget.daily * numDays
 
@@ -102,29 +106,35 @@ def getMonthBudgetRemaining(budget, id):
     return monthBudgetRemain
 
 
-def getYearBudgetRemaining(budget, id):
-
-    """
-    Param:
-        budget: A Budget object.
-        id: user ID.
-    Returns the remaining budget for the current year.
-    """
-
-    todayDate = datetime.now().date()
-    todayYear = todayDate.year()
-    numDaysInYear = 365
-
-    totalYearExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date.year()==todayYear).scalar()
-
-    if (isleap(todayYear)):
-        numDaysInYear = 366
-
-    yearBudget = budget.daily * numDaysInYear
-
-    yearBudgetRemain = yearBudget - totalYearExpenses
-
-    return yearBudgetRemain
+# def getYearBudgetRemaining(budget, id):
+#
+#     """
+#     Param:
+#         budget: A Budget object.
+#         id: user ID.
+#     Returns the remaining budget for the current year.
+#     """
+#
+#     todayDate = datetime.now().date()
+#     todayYear = todayDate.year()
+#     numDaysInYear = 365
+#
+#     budgetCreationDate = Budget.query.with_entities(Budget.creation_date).filter(Budget.user_id=id).first()
+#     endOfYearDate = date(todayYear, 12, 31)
+#
+#     totalYearExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date >= budgetCreationDate, Expense.date <= endOfYearDate).scalar()
+#
+#     if not totalYearExpenses:
+#         totalYearExpenses = 0
+#
+#     if (isleap(todayYear)):
+#         numDaysInYear = 366
+#
+#     yearBudget = budget.daily * numDaysInYear
+#
+#     yearBudgetRemain = yearBudget - totalYearExpenses
+#
+#     return yearBudgetRemain
 
 
 def getAllBudgetsRemaining(budget, id):
@@ -133,19 +143,20 @@ def getAllBudgetsRemaining(budget, id):
     Param:
         budget: A Budget object.
         id: user ID.
-    Returns the remaining budgets in dictionary like: {'today': [value], 'week': [value], 'month': [value], 'year': [value]}
+    Returns the remaining budgets in dictionary like: {'today': [value], 'week': [value], 'month': [value]}
     """
 
     # get the remaining budgets
     todayBudgetRemain = getTodayBudgetRemaining(budget, id)
     weekBudgetRemain = getWeekBudgetRemaining(budget, id)
     monthBudgetRemain = getMonthBudgetRemaining(budget, id)
-    yearBudgetRemain = getYearBudgetRemaining(budget, id)
+    # yearBudgetRemain = getYearBudgetRemaining(budget, id)
 
     allBudgetsRemain = {'today': todayBudgetRemain,
                         'week': weekBudgetRemain,
-                        'month': monthBudgetRemain,
-                        'year': yearBudgetRemain}
+                        'month': monthBudgetRemain
+                        # 'year': yearBudgetRemain
+                        }
 
     return allBudgetsRemain
 

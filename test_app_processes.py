@@ -263,12 +263,24 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
         self.assertEqual(monthBudgetRemaining, expected)
 
 
-#
-# class TestGetYearBudgetRemaining(TestAppProcesses):
-#
-#
-#     def test_getYearBudgetRemaining_with
+    def test_getMonthBudgetRemaining_with_budget_creation_date_this_month(self):
+        """
+        Test that this month's remaining budget is correct with expenses this
+        month and the budget creation date is this month.
+        This month's budget capacity should be calculated from budget creation
+        date to end of month.
+        """
 
+        budgetCreationDate = date(2019, 5, 15)
+        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+
+        # note that May has 31 days so budget in May should account for 16 days
+        expected = self.dailyBudget * 16
+
+        monthBudgetRemaining = app_processes.getMonthBudgetRemaining(budget, self.user_id)
+        self.assertEqual(monthBudgetRemaining, expected)
+
+        
 
 if __name__ == '__main__':
     unittest.main()

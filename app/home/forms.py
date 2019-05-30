@@ -23,5 +23,5 @@ class BudgetForm(FlaskForm):
     daily = DecimalField('Daily')
     weekly = DecimalField('Weekly')
     monthly = DecimalField('Monthly')
-    yearly = DecimalField('Yearly')
+    # yearly = DecimalField('Yearly')
     submit = SubmitField('Apply')
