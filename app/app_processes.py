@@ -22,6 +22,8 @@ def getTodayBudgetRemaining(budget, id):
 
     if not todayExpenses:
         todayExpenses = 0
+    else:
+        todayExpenses = roundCost(todayExpenses)
 
     # remaining budget for today
     todayBudgetRemain = budget.daily - todayExpenses
@@ -63,6 +65,8 @@ def getWeekBudgetRemaining(budget, id):
 
     if not weekExpenses:
         weekExpenses = 0
+    else:
+        weekExpenses = roundCost(weekExpenses)
 
     # remaining weekly budget
     weekBudgetRemain = (budget.daily * 7) - weekExpenses
@@ -89,12 +93,15 @@ def getMonthBudgetRemaining(budget, id):
     firstDateOfMonth = date(todayYear, todayMonth, 1)
     lastDateOfMonth = date(todayYear, todayMonth, numDays)
 
-    totalMonthExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter_by(user_id=id).filter(Expense.date >= firstDateOfMonth, Expense.date <= lastDateOfMonth).scalar()
+    totalMonthExpenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(Expense.user_id == id, Expense.date >= firstDateOfMonth, Expense.date <= todayDate).scalar()
 
     if not totalMonthExpenses:
         totalMonthExpenses = 0
+    else:
+        totalMonthExpenses = roundCost(totalMonthExpenses)
 
-    # if budget created this month, calculate the correct budget for this month
+    # if budget created this month, then this month's budget starts from
+    # day of budget creation to end of month
     if budget.creation_date.month == todayMonth:
         timeDiff = lastDateOfMonth - budget.creation_date
         numDays = timeDiff.days
@@ -159,6 +166,14 @@ def getAllBudgetsRemaining(budget, id):
                         }
 
     return allBudgetsRemain
+
+
+def roundCost(cost):
+    """
+    Return the cost rounded to 2 decimal places
+    """
+
+    return round(cost * 100) / 100
 
 
 

@@ -191,7 +191,7 @@ class TestGetWeekRemainingBudget(TestAppProcesses):
         Only expenses within the last 6 days and today should determine budget remaining.
         """
 
-        date1 = datetime.now().date() # included
+        date1 = datetime.now().date() # included in this week's budget
         date2 = date1 - timedelta(days=1) # included
         date3 = date1 - timedelta(days=6) # included
         date4 = date1 - timedelta(days=7) # not included
@@ -280,7 +280,7 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
         monthBudgetRemaining = app_processes.getMonthBudgetRemaining(budget, self.user_id)
         self.assertEqual(monthBudgetRemaining, expected)
 
-        
+
 
 if __name__ == '__main__':
     unittest.main()

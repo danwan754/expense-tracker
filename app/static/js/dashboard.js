@@ -91,10 +91,27 @@ document.getElementById('edit-budget-submit-button').addEventListener('click', f
 
     // display the budgets
     if (response.data.success) {
-      document.getElementById('budget-daily').innerHTML = response.data.budget.daily;
-      document.getElementById('budget-weekly').innerHTML = response.data.budget.weekly;
-      document.getElementById('budget-monthly').innerHTML = response.data.budget.monthly;
-      document.getElementById('budget-yearly').innerHTML = response.data.budget.yearly;
+      document.getElementById('budget-daily').innerHTML = response.data.budget.today;
+      document.getElementById('budget-weekly').innerHTML = response.data.budget.week;
+      document.getElementById('budget-monthly').innerHTML = response.data.budget.month;
+      // document.getElementById('budget-yearly').innerHTML = response.data.budget.yearly;
+      editBudgetModal.style.display = "none";
+      editBudgetModal.style.display = "none";
     }
+    else {
+      var errors = "";
+      for (prop in response.data.errors) {
+        for (item of response.data.errors[prop]) {
+          errors += item + "\n";
+        }
+      }
+      budgetError.innerHTML = errors;
+      budgetError.style.display = "block";
+    }
+  })
+  .catch(function(error) {
+    console.log(error);
+    budgetError.innerHTML = error;
+    budgetError.style.display = "block";
   });
 });

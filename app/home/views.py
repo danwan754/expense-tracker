@@ -112,3 +112,17 @@ def editBudget():
         resp = jsonify(sucess=False)
 
     return resp
+
+
+
+@home.route('/test')
+def test():
+    """
+    Just some testing anything to see json response on browser.
+    """
+
+    budget = Budget.query.filter_by(user_id=current_user.id).first()
+    budgetsRemaining = getAllBudgetsRemaining(budget, current_user.id)
+    resp = jsonify(success=True,
+                    budget=budgetsRemaining)
+    return resp
