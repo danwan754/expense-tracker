@@ -203,10 +203,3 @@ def roundCost(cost):
     """
 
     return round(cost * 100) / 100
-
-
-
-# # sum of expenses for each day
-# dailyExpensesList = Expense.query.with_entities(Expense.date, func.sum(Expense.cost)).group_by(Expense.date).order_by(Expense.date.desc()).all()
-
-# for expenseTuple in dailyExpensesList:
