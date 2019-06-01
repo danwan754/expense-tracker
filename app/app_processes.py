@@ -168,6 +168,35 @@ def getAllBudgetsRemaining(budget, id):
     return allBudgetsRemain
 
 
+def getSavings(budget, id):
+    """
+    Params:
+        budget: A Budget object.
+        id: user ID.
+    Returns the total savings to date. Note that value can be negative due to
+    going over budget.
+    """
+
+    totalExpenses = Expense.query.filter(Expense.user_id == id).with_entities(func.sum(Expense.cost).label('total')).scalar()
+
+    if totalExpenses:
+        totalExpenses = roundCost(totalExpenses)
+    else:
+        totalExpenses = 0
+
+
+    todayDate = datetime.now().date()
+    timeDiff = todayDate - budget.creation_date
+    numDays = timeDiff.days
+
+    # total budget since budget creation date
+    totalBudget = budget.daily * numDays
+
+    savings = totalBudget - totalExpenses
+
+    return savings
+
+
 def roundCost(cost):
     """
     Return the cost rounded to 2 decimal places

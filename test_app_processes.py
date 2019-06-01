@@ -215,9 +215,11 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
 
     todayDate = datetime.now().date()
     dailyBudget = 50
-    monthBudget = dailyBudget * monthrange(todayDate.year, todayDate.month)[1]
     cost1 = 2.50
     thisMonth = todayDate.month
+    thisYear = todayDate.year
+    numDays = monthrange(thisYear, thisMonth)[1]
+    monthBudget = dailyBudget * numDays
 
     if thisMonth == 1:
         prevMonth = 12
@@ -263,22 +265,50 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
         self.assertEqual(monthBudgetRemaining, expected)
 
 
-    def test_getMonthBudgetRemaining_with_budget_creation_date_this_month(self):
+
+class TestGetSavings(TestAppProcesses):
+
+    dailyBudget = 50
+    todayDate = datetime.now().date()
+    numDays = 5
+    budgetCreationDate = todayDate - timedelta(days=numDays)
+    expenseDate1 = budgetCreationDate + timedelta(days=1)
+    expenseDate2 = budgetCreationDate + timedelta(days=4)
+    expenseDate3 = budgetCreationDate + timedelta(days=5)
+    cost1 = 40
+    cost2 = 50
+    cost3 = 60
+    totalBudget = dailyBudget * numDays
+
+    def test_getSavings_with_no_expenses(self):
         """
-        Test that this month's remaining budget is correct with expenses this
-        month and the budget creation date is this month.
-        This month's budget capacity should be calculated from budget creation
-        date to end of month.
+        Test that savings available is the same as the sum of every daily budget
+        from budget creation date to today.
         """
 
-        budgetCreationDate = date(2019, 5, 15)
-        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+        expected = self.totalBudget
 
-        # note that May has 31 days so budget in May should account for 16 days
-        expected = self.dailyBudget * 16
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
 
-        monthBudgetRemaining = app_processes.getMonthBudgetRemaining(budget, self.user_id)
-        self.assertEqual(monthBudgetRemaining, expected)
+        savings = app_processes.getSavings(budget, self.user_id)
+        self.assertEqual(savings, expected)
+
+
+    def test_getSavings_with_expenses(self):
+        """
+        Test that savings available is correct with expenses.
+        """
+
+        # expected = 250 - 40 - 50 = 160
+        expected = self.totalBudget - self.cost1 - self.cost2
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+        self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", self.expenseDate1)
+        self.create_and_save_expense(self.user_id, "item1", self.cost2, "category", self.expenseDate2)
+
+        savings = app_processes.getSavings(budget, self.user_id)
+        self.assertEqual(savings, expected)
+
 
 
 
