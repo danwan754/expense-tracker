@@ -60,6 +60,14 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
       newCell.innerHTML = response.data.cost;
       addExpenseModal.style.display = "none";
       addExpenseError.style.display = "none";
+
+      // update budget display
+      var todayBudgetRemain = parseFloat(document.getElementById('budget-daily').innerHTML)
+      var weekBudgetRemain = parseFloat(document.getElementById('budget-weekly').innerHTML)
+      var monthBudgetRemain = parseFloat(document.getElementById('budget-monthly').innerHTML)
+      document.getElementById('budget-daily').innerHTML = (todayBudgetRemain - response.data.cost).toFixed(2);
+      document.getElementById('budget-weekly').innerHTML = (weekBudgetRemain - response.data.cost).toFixed(2);
+      document.getElementById('budget-monthly').innerHTML = (monthBudgetRemain - response.data.cost).toFixed(2);
     }
     else {
       var errors = "";
