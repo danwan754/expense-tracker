@@ -8,7 +8,7 @@ from . import home
 from ..models import Expense, Budget
 from forms import ExpenseForm, BudgetForm
 from .. import db
-from ..app_processes import getAllBudgetsRemaining
+from ..app_processes import getAllBudgetsRemaining, getSavings
 
 from datetime import datetime, date, timedelta
 
@@ -35,20 +35,14 @@ def dashboard():
     budget = Budget.query.filter_by(user_id=current_user.id).first()
 
     budgetsRemaining = None
+    savings = None
 
-    # get the remaining budgets
     if budget:
+        # get the remaining budgets for today, this week, this month
         budgetsRemaining = getAllBudgetsRemaining(budget, current_user.id)
 
-    ## calculate year-to-date savings
-    savings = 0
-    # if budget:
-    #     num_of_days_ytd = todayDate - budget.creation_date
-    #     ytd_budget = num_of_days_ytd.days * budget.daily
-    #     ytd_expenses = Expense.query.with_entities(func.sum(Expense.cost).label('total')).filter(Expense.user_id==current_user.id, Expense.date >= budget.creation_date, Expense.date <= todayDate).scalar()
-    #     if ytd_expenses:
-    #         savings = ytd_budget - ytd_expenses
-
+        # get total savings since budget creation
+        savings = getSavings(budget, current_user.id)
 
     expenseForm = ExpenseForm()
     budgetForm = BudgetForm()
@@ -112,6 +106,9 @@ def editBudget():
         resp = jsonify(sucess=False)
 
     return resp
+
+
+
 
 
 
