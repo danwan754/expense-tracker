@@ -1,3 +1,5 @@
+// app/static/js/dashboard.js
+
 
 var addExpenseModal = document.getElementById('add-expense-modal');
 var editBudgetModal = document.getElementById('edit-budget-modal');

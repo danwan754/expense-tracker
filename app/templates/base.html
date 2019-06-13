@@ -3,6 +3,8 @@
 <header>
   <title>{{ title }} | Expense Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block head %}
+  {% endblock %}
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
   <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -13,9 +15,7 @@
     <li class="left"><a class="brand" href="{{ url_for('home.homepage') }}">Expense Tracker</a></li>
     {% if current_user.is_authenticated %}
       <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Savings</a></li>
-      <li><a href="#">Expense</a></li>
+      <li><a href="{{ url_for('history.historyPage') }}">History</a></li>
       <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
     {% else %}
       <li><a href="{{ url_for('auth.login') }}">Login</a></li>

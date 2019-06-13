@@ -310,6 +310,84 @@ class TestGetSavings(TestAppProcesses):
         self.assertEqual(savings, expected)
 
 
+class TestGetMonthSavings(TestAppProcesses):
+
+    dailyBudget = 50
+    month = 6
+    year = 2019
+    numDays = 30
+    cost = 10
+
+
+    # monthBudget = 50 * 30 = 1500
+    monthBudget = dailyBudget * numDays
+
+    def test_getMonthSavings_with_no_expenses_in_month(self):
+        """
+        Test that the total savings in the selected month is equal to the total
+        budget for that month since there are no expenses that month.
+        """
+
+        budgetCreationDate = date(2019, 5, 1)
+        expenseDate1 = date(2019, 5, 1)
+        expenseDate2 = date(2019, 7, 15)
+
+        # expected = 1500
+        expected = self.monthBudget
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", expenseDate1)
+        self.create_and_save_expense(self.user_id, "item2", self.cost, "category", expenseDate2)
+        savings = app_processes.getMonthSavings(self.month, self.year, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+    def test_getMonthSavings_with_expenses_in_month(self):
+        """
+        Test that the total savings in the selected month is correct when there
+        are expenses that month.
+        """
+
+        budgetCreationDate = date(2019, 5, 1)
+        expenseDate1 = date(2019, 6, 1)
+        expenseDate2 = date(2019, 6, 30)
+
+        # expected = 1500 - 10 - 10  = 1480
+        expected = self.monthBudget - self.cost - self.cost
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", expenseDate1)
+        self.create_and_save_expense(self.user_id, "item2", self.cost, "category", expenseDate2)
+        savings = app_processes.getMonthSavings(self.month, self.year, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+    def test_getMonthSavings_with_expenses_and_budget_created_same_month_year(self):
+        """
+        Test that the total savings in the selected month is correct when the
+        budget was created on the same month and year, and there are expenses.
+        """
+
+        budgetCreationDate = date(2019, 6, 15)
+        expenseDate1 = date(2019, 6, 16)
+        expenseDate2 = date(2019, 6, 30)
+        partialMonthBudget = self.dailyBudget * 16
+
+        # expected = 800 - 10 - 10  = 780
+        expected = partialMonthBudget - self.cost - self.cost
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", expenseDate1)
+        self.create_and_save_expense(self.user_id, "item2", self.cost, "category", expenseDate2)
+        savings = app_processes.getMonthSavings(self.month, self.year, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
 
 
 if __name__ == '__main__':

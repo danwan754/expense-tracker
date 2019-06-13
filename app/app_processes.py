@@ -197,6 +197,62 @@ def getSavings(budget, id):
     return savings
 
 
+def getMonthSavings(month, year, budget, id):
+    """
+    Params:
+        month: Month as a number where 1 = January, 12 = December
+        year: Year as a number. Ex.: 2019
+        budget: A Budget object.
+        id: user ID.
+    Returns the total savings for month.
+    """
+
+    numDaysInMonth = monthrange(year, month)[1]
+    firstDate = date(year, month, 1)
+    lastDate = date(year, month, numDaysInMonth)
+
+    # if budget created this month and year, calculate partial month budget starting from from budget creation date
+    if budget.creation_date.month == month and budget.creation_date.year == year:
+
+        today = datetime.now().date()
+
+        # if budget created on same month and year as today, calculate partial month budget from creation date to today
+        if today.month == budget.creation_date.month and today.year == budget.creation_date.year:
+            timeDiff = today - budget.creation_date
+
+        else:
+            timeDiff = lastDate - budget.creation_date
+
+        # include the budget creation day
+        numDays = timeDiff.days + 1
+
+    else:
+        numDays = numDaysInMonth
+
+    monthBudget = budget.daily * numDays
+
+    expenses = Expense.query.filter(Expense.user_id == id, Expense.date <= lastDate, Expense.date >= firstDate).with_entities(func.sum(Expense.cost).label('total')).scalar()
+
+    if expenses:
+        expenses = roundCost(expenses)
+    else:
+        expenses = 0
+
+    savings = monthBudget - expenses
+
+    return savings
+
+
+def getDaySavings(date, budget, id):
+    """
+    Params:
+        date: A Date object.
+        budget: A Budget object.
+        id: user ID.
+    Returns the total savings this date.
+    """
+
+
 def roundCost(cost):
     """
     Return the cost rounded to 2 decimal places

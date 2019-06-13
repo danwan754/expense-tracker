@@ -1,0 +1,46 @@
+/* app/static/css/history.css */
+
+.history-main-container {
+  margin: 50px;
+}
+
+.history-left-side-container {
+  display: inline-block;
+  width: 30%;
+  margin-right: 25px;
+}
+
+.history-right-side-container {
+  display: inline-block;
+  width: 60%;
+  margin-left: 25px;
+  text-align: center;
+  vertical-align: top;
+}
+
+
+.month-button {
+  width: 50%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 1.5em;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  border: black 1px solid;
+}
+
+.month-button:hover {
+  background-color: #b3dbff;
+}
+
+.month-button:active {
+  background-color: #99cfff;
+}
+
+
+.summary-container {
+  font-size: 1.25em;
+}

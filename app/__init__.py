@@ -46,4 +46,7 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
+    from .history import history as history_blueprint
+    app.register_blueprint(history_blueprint)
+
     return app
