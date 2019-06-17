@@ -267,7 +267,7 @@ def getDaySavings(date, budget, id):
 def getYearSavings(year, budget, id):
     """
     Params:
-        date: A Date object.
+        year: integer.
         budget: A Budget object.
         id: user ID.
     Returns the total savings for year in date.
@@ -300,6 +300,33 @@ def getYearSavings(year, budget, id):
     yearBudget = budget.daily * numDaysInYear
 
     savings = yearBudget - expenses
+
+    return savings
+
+
+def getDateRangeSavings(date1, date2, budget, id):
+    """
+    Params:
+        date1: A Date object for a starting date.
+        date2: A Date object for an ending date.
+        budget: A Budget object.
+        id: user ID.
+    Returns the total savings for a date range.
+    """
+
+    timeDiff = date2 - date1
+    numDays = timeDiff.days + 1
+
+    expenses = Expense.query.filter(Expense.user_id==id, Expense.date>=date1, Expense.date<=date2).with_entities(func.sum(Expense.cost).label('total')).scalar()
+
+    if expenses:
+        expenses = roundCost(expenses)
+    else:
+        expenses = 0
+
+    dateRangeBudget = budget.daily * numDays
+
+    savings = dateRangeBudget - expenses
 
     return savings
 

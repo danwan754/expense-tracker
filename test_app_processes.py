@@ -507,5 +507,44 @@ class TestGetYearSavings(TestAppProcesses):
         self.assertEqual(savings, expected)
 
 
+class TestGetDateRangeSavings(TestAppProcesses):
+
+    dailyBudget = 50
+    budgetCreationDate = date(2019, 5, 1)
+    cost = 10
+    date1 = date(2019, 5, 30)
+    date2 = date(2019, 6, 5)
+    numDays = 7
+
+    def test_getDateRangeSavings_with_expenses(self):
+        """
+        Test that the total savings within a date range is correct when there
+        are expenses within that date range.
+        """
+
+
+        # expected = 50 * 7 - 10 - 10 - 10
+        expected = self.dailyBudget * self.numDays - self.cost - self.cost - self.cost
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+
+        # these expenses are within the date range and should be included in savings calculation
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 5, 30))
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 6, 4))
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 6, 5))
+
+
+        # this expense should not be included in the calculation
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 6, 6))
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 5, 29))
+
+
+        savings = app_processes.getDateRangeSavings(self.date1, self.date2, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -28,11 +28,11 @@ function updateDateSavingsDisplay(heading, value) {
 
 
 // fetch and display savings for date
-function getDateSavings(year, month, day) {
+function getDateSavingsAndUpdateDisplay(year, month, day) {
   axios.get('/day-savings', {
     params: {
       year: year,
-      month: month,
+      month: month + 1,
       day: day,
     }
   })
@@ -43,8 +43,28 @@ function getDateSavings(year, month, day) {
   });
 }
 
+// fetch and display savings for date range
+function getDateRangeSavingsAndUpdateDisplay(year1, year2, month1, month2, day1, day2) {
+  axios.get('/date-range-savings', {
+    params: {
+      year1: year1,
+      year2: year2,
+      month1: month1 + 1,
+      month2: month2 + 1,
+      day1: day1,
+      day2: day2,
+    }
+  })
+  .then(function(response) {
+    var heading = monthArr[month1] + " " + day1 + ", " + year1 + "  -  " + monthArr[month2] + " " + day2 + ", " + year2;
+    var value = response.data.savings;
+    updateDateSavingsDisplay(heading, value);
+  });
+}
+
+
 // fetch and display month savings
-function getMonthSavings(month, year) {
+function getMonthSavingsAndUpdateDisplay(month, year) {
   axios.get('/month-savings', {
     params: {
       month: month,
@@ -59,7 +79,7 @@ function getMonthSavings(month, year) {
 }
 
 // fetch and display year savings
-function getYearSavings(year) {
+function getYearSavingsAndUpdateDisplay(year) {
   axios.get('/year-savings', {
     params: {
       year: year,
@@ -90,21 +110,43 @@ calendarOptions = {
   onMonthChange: function(selectedDates, dateStr, instance) {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
-    getMonthSavings(selectedMonth, selectedYear);
+    getMonthSavingsAndUpdateDisplay(selectedMonth, selectedYear);
   },
 
   onYearChange: function(selectedDates, dateStr, instance) {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
-    getYearSavings(selectedYear);
-    getMonthSavings(selectedMonth, selectedYear);
+    getYearSavingsAndUpdateDisplay(selectedYear);
+    getMonthSavingsAndUpdateDisplay(selectedMonth, selectedYear);
   },
 
   onChange: function(selectedDates, dateStr, instance) {
+
+    // wait for two selected dates if calendar is in range mode
+    if (instance.config.mode == "range") {
+      if (selectedDates.length < 2) {
+        console.log("1");
+        return;
+      }
+      year2 = selectedDates[1].getFullYear();
+      month2 = selectedDates[1].getMonth();
+      day2 = selectedDates[1].getDate();
+    }
+
     year = selectedDates[0].getFullYear();
     month = selectedDates[0].getMonth();
     day = selectedDates[0].getDate();
-    savings = getDateSavings(year, month, day);
+
+    if (instance.config.mode == "single") {
+      getDateSavingsAndUpdateDisplay(year, month, day);
+    }
+    else {
+      getDateRangeSavingsAndUpdateDisplay(year, year2, month, month2, day, day2);
+    }
+
+    // for (var i=0; i<selectedDates.length; i++) {
+    //   console.log(selectedDates[i]);
+    // }
   },
 
 }
@@ -116,6 +158,7 @@ toggleDateRange.addEventListener("click", function() {
   toggleDateRange.style.backgroundColor = "#99cfff";
   toggleSingleDate.style.backgroundColor = "#FFFFFF";
   calendar.config.mode = "range";
+  calendar.clear();
 });
 
 toggleSingleDate.addEventListener("click", function() {
