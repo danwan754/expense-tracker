@@ -99,8 +99,8 @@ function getYearSavingsAndUpdateDisplay(year) {
 
 calendarOptions = {
   minDate: minDate, // minDate declared in history.html
-  // maxDate: todayDate,
-  maxDate: new Date(2020, 3, 1),
+  maxDate: todayDate,
+  // maxDate: new Date(2020, 3, 1), // for testing
   defaultDate: todayDate,
   altInput: true,
   altFormat: "F j, Y",
