@@ -7,7 +7,7 @@ from . import history
 from ..models import Expense, Budget
 from .. import db
 from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings
-from datetime import datetime
+from datetime import datetime, date
 
 
 @history.route('/history')
@@ -52,8 +52,11 @@ def daySavings():
     """
 
     budget = Budget.query.filter(Budget.user_id == current_user.id).first()
-    date = date(request.args['year'], request.args['month'], request.args['day'])
-    day_savings = getDaySavings(date, budget, current_user.id)
+    year = int(request.args['year'])
+    month = int(request.args['month'])
+    day = int(request.args['day'])
+    selectedDate = date(year, month, day)
+    day_savings = getDaySavings(selectedDate, budget, current_user.id)
 
     resp = jsonify(status_code=200,
                     savings = day_savings)

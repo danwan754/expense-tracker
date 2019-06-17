@@ -13,15 +13,28 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 
 var todayDate = new Date();
 
-// // fetch savings for day, month, or year
-// function getSavings(endpoint, selectedDate) {
-//   var options = {
-//     params: {
-//       date: selectedDate
-//     }
-//   }
-//   return axios.get(endpoint, options)
-// }
+function createSummaryContainer(heading, value) {
+  var savingsDiv = document.createElement("DIV");
+  savingsDiv.className = "summary-sub-container";
+  savingsDiv.innerHTML = "<p id='month-savings'>" + heading + " Savings</p><p id='month-savings-value' class='savings-value'>" + value + "</p>";
+  document.getElementById("history-right-side-container").appendChild(savingsDiv);
+}
+
+// fetch and display savings for date
+function getDateSavings(year, month, day) {
+  axios.get('/day-savings', {
+    params: {
+      year: year,
+      month: month,
+      day: day,
+    }
+  })
+  .then(function(response) {
+    var heading = monthArr[month] + " " + day + ", " + year;
+    var value = response.data.savings;
+    createSummaryContainer(heading, value);
+  });
+}
 
 // fetch and display month savings
 function getMonthSavings(month, year) {
@@ -32,10 +45,9 @@ function getMonthSavings(month, year) {
     }
   })
   .then(function(response) {
-    var monthSavingsDiv = document.createElement("DIV");
-    monthSavingsDiv.className = "summary-sub-container";
-    monthSavingsDiv.innerHTML = "<p id='month-savings'>" + monthArr[selectedMonth - 1] + " " + selectedYear + " Savings</p><p id='month-savings-value' class='savings-value'>" + response.data.savings + "</p>";
-    document.getElementById("history-right-side-container").appendChild(monthSavingsDiv);
+    var heading = monthArr[month - 1] + " " + year;
+    var value = response.data.savings;
+    createSummaryContainer(heading, value);
   });
   // console.log('month fetched');
 }
@@ -79,8 +91,6 @@ calendarOptions = {
   },
 
   onYearChange: function(selectedDates, dateStr, instance) {
-    // selectedMonth = selectedDates[0].getMonth() + 1;
-    // selectedYear = selectedDates[0].getFullYear();
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
     getYearSavings(selectedYear);
@@ -89,31 +99,11 @@ calendarOptions = {
   },
 
   onChange: function(selectedDates, dateStr, instance) {
-
-    // // when month date change, fetch savings for mmonth
-    // if (dateChangeDic['isChangeMonth']) {
-    //   savings = getSavings('/month-savings', selectedDates[0])
-    //   console.log('month fetched')
-    //   dateChangeDic['isChangeMonth'] = false;
-    // }
-
-    // // when day date change, fetch savings for new date
-    // if (dateChangeDic['isChangeDay']) {
-    //   savings = getSavings('/day-savings', selectedDates[0])
-    //   console.log('day fetched')
-    // }
-
-    // // when year date change
-    // if (dateChangeDic['isChangeYear']) {
-    //   savings = getSavings('/year-savings', selectedDates[0])
-    //   console.log('year fetched')
-    //   dateChangeDic['isChangeYear'] = false;
-    // }
-
-    savings = getSavings('/day-savings', selectedDates[0])
+    year = selectedDates[0].getFullYear();
+    month = selectedDates[0].getMonth();
+    day = selectedDates[0].getDate();
+    savings = getDateSavings(year, month, day);
     console.log('date changed');
-    console.log('day fetched');
-
   },
 
 }
