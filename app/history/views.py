@@ -8,6 +8,7 @@ from ..models import Expense, Budget
 from .. import db
 from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings
 from datetime import datetime, date
+from calendar import month_name
 
 
 @history.route('/history')
@@ -17,11 +18,20 @@ def historyPage():
     Render the history template
     """
 
+    today = datetime.now().date()
     budget = Budget.query.filter(Budget.user_id == current_user.id).first()
     ytd_savings = getYearToDateSavings(budget, current_user.id)
+    month_savings = getMonthSavings(today.month, today.year, today, budget, current_user.id)
+    today_savings = getDaySavings(today, budget, current_user.id)
     minDate = budget.creation_date
 
-    return render_template('history/history.html', savings=ytd_savings, minDate=minDate)
+    return render_template('history/history.html', ytdSavings=ytd_savings,
+                                                    monthSavings=month_savings,
+                                                    todaySavings=today_savings,
+                                                    todayYear=today.year,
+                                                    todayMonth=month_name[today.month],
+                                                    todayDate=today.strftime("%B %d, %Y"),
+                                                    minDate=minDate)
 
 
 @history.route('/month-savings', methods=['GET'])

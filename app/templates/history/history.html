@@ -30,8 +30,16 @@
 
     <div class="summary-container">
       <div class="summary-sub-container">
-        <p id="year-savings">Year-to-Date Savings</p>
-        <p id="year-savings-value" class="savings-value">{{ savings }}</p>
+        <p id="year-savings">{{ todayYear ~ " Year-to-Date Savings"}}</p>
+        <p id="year-savings-value" class="savings-value">{{ ytdSavings }}</p>
+      </div>
+      <div id="month-summary-div" class="summary-sub-container">
+        <p id="month-savings-header">{{ todayMonth ~ " Savings"}}</p>
+        <p id="month-savings-value" class="savings-value">{{ monthSavings }}</p>
+      </div>
+      <div id="date-summary-div" class="summary-sub-container">
+        <p id="date-savings-header">{{ todayDate ~ " Savings"}}</p>
+        <p id="date-savings-value" class="savings-value">{{ todaySavings }}</p>
       </div>
     </div>
 

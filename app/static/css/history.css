@@ -65,3 +65,7 @@
   border: 1px blue solid;
   margin: 50px;
 }
+
+.hidden-container {
+  visibility: hidden;
+}

@@ -13,12 +13,26 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 
 var todayDate = new Date();
 
-function createSummaryContainer(heading, value) {
-  var savingsDiv = document.createElement("DIV");
-  savingsDiv.className = "summary-sub-container";
-  savingsDiv.innerHTML = "<p id='month-savings'>" + heading + " Savings</p><p id='month-savings-value' class='savings-value'>" + value + "</p>";
-  document.getElementById("history-right-side-container").appendChild(savingsDiv);
+// function createSummaryContainer(heading, value) {
+//   var savingsDiv = document.createElement("DIV");
+//   savingsDiv.className = "summary-sub-container";
+//   savingsDiv.innerHTML = "<p id='month-savings'>" + heading + " Savings</p><p id='month-savings-value' class='savings-value'>" + value + "</p>";
+//   document.getElementById("history-right-side-container").appendChild(savingsDiv);
+// }
+
+function updateMonthSavingsDisplay(heading, value) {
+  // document.getElementById("month-summary-div").style.visibility = "visible";
+  document.getElementById("month-savings-header").innerHTML = heading + " Savings";
+  document.getElementById("month-savings-value").innerHTML = value;
 }
+
+
+function updateDateSavingsDisplay(heading, value) {
+  // document.getElementById("date-summary-div").style.visibility = "visible";
+  document.getElementById("date-savings-header").innerHTML = heading + " Savings";
+  document.getElementById("date-savings-value").innerHTML = value;
+}
+
 
 // fetch and display savings for date
 function getDateSavings(year, month, day) {
@@ -32,7 +46,7 @@ function getDateSavings(year, month, day) {
   .then(function(response) {
     var heading = monthArr[month] + " " + day + ", " + year;
     var value = response.data.savings;
-    createSummaryContainer(heading, value);
+    updateDateSavingsDisplay(heading, value);
   });
 }
 
@@ -47,9 +61,8 @@ function getMonthSavings(month, year) {
   .then(function(response) {
     var heading = monthArr[month - 1] + " " + year;
     var value = response.data.savings;
-    createSummaryContainer(heading, value);
+    updateMonthSavingsDisplay(heading, value);
   });
-  // console.log('month fetched');
 }
 
 // fetch and display year savings
@@ -69,7 +82,6 @@ function getYearSavings(year) {
     document.getElementById("year-savings").innHTML = heading;
     document.getElementById("year-savings-value").innerHTML = response.data.savings;
   });
-  // console.log('year changed');
 }
 
 calendarOptions = {
@@ -86,8 +98,6 @@ calendarOptions = {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
     getMonthSavings(selectedMonth, selectedYear);
-    console.log("month: " + selectedMonth);
-    console.log("year: " + selectedYear);
   },
 
   onYearChange: function(selectedDates, dateStr, instance) {
@@ -95,7 +105,6 @@ calendarOptions = {
     selectedYear = instance.currentYear;
     getYearSavings(selectedYear);
     getMonthSavings(selectedMonth, selectedYear);
-    console.log("year only: " + selectedYear);
   },
 
   onChange: function(selectedDates, dateStr, instance) {
@@ -103,7 +112,6 @@ calendarOptions = {
     month = selectedDates[0].getMonth();
     day = selectedDates[0].getDate();
     savings = getDateSavings(year, month, day);
-    console.log('date changed');
   },
 
 }
