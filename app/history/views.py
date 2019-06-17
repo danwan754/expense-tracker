@@ -25,6 +25,11 @@ def historyPage():
     today_savings = getDaySavings(today, budget, current_user.id)
     minDate = budget.creation_date
 
+    # add a comma for each thousands
+    ytd_savings = "{:,}".format(ytd_savings)
+    month_savings = "{:,}".format(month_savings)
+    today_savings = "{:,}".format(today_savings)
+
     return render_template('history/history.html', ytdSavings=ytd_savings,
                                                     monthSavings=month_savings,
                                                     todaySavings=today_savings,

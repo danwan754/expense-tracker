@@ -8,7 +8,9 @@
   display: inline-block;
   width: 50%;
   margin-right: 25px;
-  border: 1px black solid;
+  border: 1px #66b5ff solid;
+  border-radius: 25px;
+  padding: 10px;
 }
 
 #history-right-side-container {
@@ -17,7 +19,8 @@
   margin-left: 25px;
   text-align: center;
   vertical-align: top;
-  border: 1px black solid;
+  border: 1px #66b5ff solid;
+  border-radius: 25px;
 }
 
 
@@ -45,31 +48,44 @@
 
 .summary-container {
   font-size: 1.25em;
+  /* color: #003566; */
+  padding: 10px;
+}
+
+#summary-header {
+  margin: 10px;
+  font-size: 1.5em;
 }
 
 .summary-sub-container {
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: solid #b3daff 1px;
+  border-radius: 25px;
+}
+
+.savings-heading {
+  color: #003566;
+}
+
+.savings-value {
+  /* color: #29a329; */
 }
 
 .date-option-container {
   display: inline-block;
   width: 30%;
-  border: 1px blue solid;
+  /* border: 1px blue solid; */
 }
 
 .date-input-container {
   display: inline-block;
-  width: 50%;
-  vertical-align: top;
-  border: 1px blue solid;
+  /* width: 50%; */
+  /* vertical-align: top; */
+  /* border: 1px blue solid; */
   margin: 50px;
 }
 
 #date-input {
-  width: 100%;
-}
-
-.hidden-container {
-  visibility: hidden;
+  /* border: solid 5px #4da9ff; */
 }

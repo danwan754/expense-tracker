@@ -15,14 +15,14 @@ var todayDate = new Date();
 
 function updateMonthSavingsDisplay(heading, value) {
   // document.getElementById("month-summary-div").style.visibility = "visible";
-  document.getElementById("month-savings-header").innerHTML = heading + " Savings";
+  document.getElementById("month-savings-header").innerHTML = heading;
   document.getElementById("month-savings-value").innerHTML = value;
 }
 
 
 function updateDateSavingsDisplay(heading, value) {
   // document.getElementById("date-summary-div").style.visibility = "visible";
-  document.getElementById("date-savings-header").innerHTML = heading + " Savings";
+  document.getElementById("date-savings-header").innerHTML = heading;
   document.getElementById("date-savings-value").innerHTML = value;
 }
 
@@ -38,7 +38,7 @@ function getDateSavingsAndUpdateDisplay(year, month, day) {
   })
   .then(function(response) {
     var heading = monthArr[month] + " " + day + ", " + year;
-    var value = response.data.savings;
+    var value = response.data.savings.toLocaleString();
     updateDateSavingsDisplay(heading, value);
   });
 }
@@ -57,7 +57,7 @@ function getDateRangeSavingsAndUpdateDisplay(year1, year2, month1, month2, day1,
   })
   .then(function(response) {
     var heading = monthArr[month1] + " " + day1 + ", " + year1 + "  -  " + monthArr[month2] + " " + day2 + ", " + year2;
-    var value = response.data.savings;
+    var value = response.data.savings.toLocaleString();
     updateDateSavingsDisplay(heading, value);
   });
 }
@@ -73,7 +73,7 @@ function getMonthSavingsAndUpdateDisplay(month, year) {
   })
   .then(function(response) {
     var heading = monthArr[month - 1] + " " + year;
-    var value = response.data.savings;
+    var value = response.data.savings.toLocaleString();
     updateMonthSavingsDisplay(heading, value);
   });
 }
@@ -87,20 +87,20 @@ function getYearSavingsAndUpdateDisplay(year) {
   })
   .then(function(response) {
     thisYear = new Date().getFullYear();
-    heading = year + " Savings";
+    heading = year;
 
     if (thisYear == year) {
-      heading = year + " Year-To-Date Savings";
+      heading = year + " Year-To-Date";
     }
-    document.getElementById("year-savings").innHTML = heading;
-    document.getElementById("year-savings-value").innerHTML = response.data.savings;
+    document.getElementById("year-savings").innerHTML = heading;
+    document.getElementById("year-savings-value").innerHTML = response.data.savings.toLocaleString();
   });
 }
 
 calendarOptions = {
   minDate: minDate, // minDate declared in history.html
-  maxDate: todayDate,
-  // maxDate: new Date(2020, 3, 1),
+  // maxDate: todayDate,
+  maxDate: new Date(2020, 3, 1),
   defaultDate: todayDate,
   altInput: true,
   altFormat: "F j, Y",
@@ -125,7 +125,6 @@ calendarOptions = {
     // wait for two selected dates if calendar is in range mode
     if (instance.config.mode == "range") {
       if (selectedDates.length < 2) {
-        console.log("1");
         return;
       }
       year2 = selectedDates[1].getFullYear();
@@ -143,17 +142,14 @@ calendarOptions = {
     else {
       getDateRangeSavingsAndUpdateDisplay(year, year2, month, month2, day, day2);
     }
-
-    // for (var i=0; i<selectedDates.length; i++) {
-    //   console.log(selectedDates[i]);
-    // }
   },
 
 }
 
+// initializes the calendar
 var calendar = flatpickr("#date-input", calendarOptions);
 
-
+// highlights the date range button if it is active
 toggleDateRange.addEventListener("click", function() {
   toggleDateRange.style.backgroundColor = "#99cfff";
   toggleSingleDate.style.backgroundColor = "#FFFFFF";
@@ -161,6 +157,7 @@ toggleDateRange.addEventListener("click", function() {
   calendar.clear();
 });
 
+// highlight the single date selection button if it is active
 toggleSingleDate.addEventListener("click", function() {
   toggleDateRange.style.backgroundColor = "#FFFFFF";
   toggleSingleDate.style.backgroundColor = "#99cfff";
