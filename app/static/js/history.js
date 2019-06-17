@@ -1,11 +1,10 @@
 // app/static/js/history.js
 
-// // track if date values were changed
-// var dateChangeDic = {
-//   'isChangeDay': false,
-//   'isChangeMonth': false,
-//   'isChangeYear': false
-// }
+var toggleDateRange = document.getElementById("toggle-range");
+var toggleSingleDate = document.getElementById("toggle-single");
+
+// default toggle is single date selection mode
+toggleSingleDate.style.backgroundColor = "#99cfff";
 
 // months in a year
 monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -13,12 +12,6 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 
 var todayDate = new Date();
 
-// function createSummaryContainer(heading, value) {
-//   var savingsDiv = document.createElement("DIV");
-//   savingsDiv.className = "summary-sub-container";
-//   savingsDiv.innerHTML = "<p id='month-savings'>" + heading + " Savings</p><p id='month-savings-value' class='savings-value'>" + value + "</p>";
-//   document.getElementById("history-right-side-container").appendChild(savingsDiv);
-// }
 
 function updateMonthSavingsDisplay(heading, value) {
   // document.getElementById("month-summary-div").style.visibility = "visible";
@@ -116,12 +109,17 @@ calendarOptions = {
 
 }
 
-var calendar = flatpickr("#dateInput", calendarOptions);
+var calendar = flatpickr("#date-input", calendarOptions);
 
 
-// if a 'month-button' is clicked, move the date input to the clicked 'month-button'
-document.body.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('month-button')) {
-      dateInputTracker = target.innerHTML;
-    }
-}, false);
+toggleDateRange.addEventListener("click", function() {
+  toggleDateRange.style.backgroundColor = "#99cfff";
+  toggleSingleDate.style.backgroundColor = "#FFFFFF";
+  calendar.config.mode = "range";
+});
+
+toggleSingleDate.addEventListener("click", function() {
+  toggleDateRange.style.backgroundColor = "#FFFFFF";
+  toggleSingleDate.style.backgroundColor = "#99cfff";
+  calendar.config.mode = "single";
+});

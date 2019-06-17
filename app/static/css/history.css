@@ -21,10 +21,10 @@
 }
 
 
-.month-button {
+.toggle-button {
   /* width: 20%; */
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   font-size: 1.5em;
   padding-left: 20px;
   padding-right: 20px;
@@ -34,11 +34,11 @@
   border: black 1px solid;
 }
 
-.month-button:hover {
+.toggle-button:hover {
   background-color: #b3dbff;
 }
 
-.month-button:active {
+.toggle-button:active {
   background-color: #99cfff;
 }
 
@@ -64,6 +64,10 @@
   vertical-align: top;
   border: 1px blue solid;
   margin: 50px;
+}
+
+#date-input {
+  width: 100%;
 }
 
 .hidden-container {
