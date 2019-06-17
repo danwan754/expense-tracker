@@ -8,7 +8,7 @@ from . import home
 from ..models import Expense, Budget
 from forms import ExpenseForm, BudgetForm
 from .. import db
-from ..app_processes import getAllBudgetsRemaining, getSavings
+from ..app_processes import getAllBudgetsRemaining, getYearToDateSavings
 
 from datetime import datetime, date, timedelta
 
@@ -42,7 +42,7 @@ def dashboard():
         budgetsRemaining = getAllBudgetsRemaining(budget, current_user.id)
 
         # get total savings since budget creation
-        savings = getSavings(budget, current_user.id)
+        savings = getYearToDateSavings(budget, current_user.id)
 
     expenseForm = ExpenseForm()
     budgetForm = BudgetForm()

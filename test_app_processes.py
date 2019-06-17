@@ -266,7 +266,7 @@ class TestGetMonthBudgetRemaining(TestAppProcesses):
 
 
 
-class TestGetSavings(TestAppProcesses):
+class TestGetYearToDateSavings(TestAppProcesses):
 
     dailyBudget = 50
     todayDate = datetime.now().date()
@@ -280,7 +280,7 @@ class TestGetSavings(TestAppProcesses):
     cost3 = 60
     totalBudget = dailyBudget * numDays
 
-    def test_getSavings_with_no_expenses(self):
+    def test_getYearToDateSavings_with_no_expenses(self):
         """
         Test that savings available is the same as the sum of every daily budget
         from budget creation date to today.
@@ -290,11 +290,11 @@ class TestGetSavings(TestAppProcesses):
 
         budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
 
-        savings = app_processes.getSavings(budget, self.user_id)
+        savings = app_processes.getYearToDateSavings(budget, self.user_id)
         self.assertEqual(savings, expected)
 
 
-    def test_getSavings_with_expenses(self):
+    def test_getYearToDateSavings_with_expenses(self):
         """
         Test that savings available is correct with expenses.
         """
@@ -306,7 +306,7 @@ class TestGetSavings(TestAppProcesses):
         self.create_and_save_expense(self.user_id, "item1", self.cost1, "category", self.expenseDate1)
         self.create_and_save_expense(self.user_id, "item1", self.cost2, "category", self.expenseDate2)
 
-        savings = app_processes.getSavings(budget, self.user_id)
+        savings = app_processes.getYearToDateSavings(budget, self.user_id)
         self.assertEqual(savings, expected)
 
 
@@ -328,9 +328,10 @@ class TestGetMonthSavings(TestAppProcesses):
         budget for that month since there are no expenses that month.
         """
 
-        budgetCreationDate = date(2019, 5, 1)
-        expenseDate1 = date(2019, 5, 1)
-        expenseDate2 = date(2019, 7, 15)
+        budgetCreationDate = date(2019, 4, 1)
+        todayDate = date(2019, 6, 1)
+        expenseDate1 = date(2019, 5, 4)
+        expenseDate2 = date(2019, 4, 15)
 
         # expected = 1500
         expected = self.monthBudget
@@ -339,7 +340,7 @@ class TestGetMonthSavings(TestAppProcesses):
 
         self.create_and_save_expense(self.user_id, "item1", self.cost, "category", expenseDate1)
         self.create_and_save_expense(self.user_id, "item2", self.cost, "category", expenseDate2)
-        savings = app_processes.getMonthSavings(self.month, self.year, budget, self.user_id)
+        savings = app_processes.getMonthSavings(self.month, self.year, todayDate, budget, self.user_id)
 
         self.assertEqual(savings, expected)
 
@@ -350,7 +351,8 @@ class TestGetMonthSavings(TestAppProcesses):
         are expenses that month.
         """
 
-        budgetCreationDate = date(2019, 5, 1)
+        budgetCreationDate = date(2019, 4, 1)
+        todayDate = date(2019, 7, 1)
         expenseDate1 = date(2019, 6, 1)
         expenseDate2 = date(2019, 6, 30)
 
@@ -361,7 +363,7 @@ class TestGetMonthSavings(TestAppProcesses):
 
         self.create_and_save_expense(self.user_id, "item1", self.cost, "category", expenseDate1)
         self.create_and_save_expense(self.user_id, "item2", self.cost, "category", expenseDate2)
-        savings = app_processes.getMonthSavings(self.month, self.year, budget, self.user_id)
+        savings = app_processes.getMonthSavings(self.month, self.year, todayDate, budget, self.user_id)
 
         self.assertEqual(savings, expected)
 
@@ -372,22 +374,137 @@ class TestGetMonthSavings(TestAppProcesses):
         budget was created on the same month and year, and there are expenses.
         """
 
-        budgetCreationDate = date(2019, 6, 15)
-        expenseDate1 = date(2019, 6, 16)
-        expenseDate2 = date(2019, 6, 30)
-        partialMonthBudget = self.dailyBudget * 16
+        budgetCreationDate = date(2019, 6, 5)
+        todayDate = date(2019, 6, 15)
+        expenseDate1 = date(2019, 6, 6)
+        expenseDate2 = date(2019, 6, 14)
 
-        # expected = 800 - 10 - 10  = 780
+        # there is 11 days from June 5 to June 15, inclusive; partialBudget = 50 * 11 = 550
+        partialMonthBudget = self.dailyBudget * 11
+
+        # expected = 550 - 10 - 10  = 530
         expected = partialMonthBudget - self.cost - self.cost
 
         budget = self.create_budget(self.user_id, self.dailyBudget, budgetCreationDate)
 
         self.create_and_save_expense(self.user_id, "item1", self.cost, "category", expenseDate1)
         self.create_and_save_expense(self.user_id, "item2", self.cost, "category", expenseDate2)
-        savings = app_processes.getMonthSavings(self.month, self.year, budget, self.user_id)
+        savings = app_processes.getMonthSavings(self.month, self.year, todayDate, budget, self.user_id)
 
         self.assertEqual(savings, expected)
 
+
+class TestGetDaySavings(TestAppProcesses):
+
+    dailyBudget = 50
+    cost = 10
+    budgetCreationDate = date(2019, 6, 15)
+
+    # arbitrary dates after budgetCreationDate
+    selectedDate = date(2019, 6, 18)
+    expenseDate = date(2019, 7, 15)
+
+
+    def test_getDaySavings_with_no_expenses_in_selected_day(self):
+        """
+        Test that the total savings in selected date is correct when there are no
+        expenses on that date.
+        """
+
+        # expected = 50
+        expected = self.dailyBudget
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", self.expenseDate)
+        savings = app_processes.getDaySavings(self.selectedDate, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+    def test_getDaySavings_with_expenses_on_selected_day(self):
+        """
+        Test that the total savings in the selected date is correct when there
+        are expenses on that date.
+        """
+
+        # expected = 50 - 10 - 10 = 30
+        expected = self.dailyBudget - self.cost - self.cost
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", self.selectedDate)
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", self.selectedDate)
+
+        savings = app_processes.getDaySavings(self.selectedDate, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+
+class TestGetYearSavings(TestAppProcesses):
+
+    year = 2019
+    numDaysInYear = 365
+    dailyBudget = 50
+    budgetCreationDate = date(2018, 2, 1)
+    cost = 10
+
+    def test_getYearSavings_with_no_expenses_in_year(self):
+        """
+        Test that the total savings in the selected year is equal to the total
+        budget for that year since there is not expenses that year.
+        """
+
+        # expected = 50 * 365 = 18250
+        expected = self.dailyBudget * self.numDaysInYear
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+
+        # this expense should not be used in the savings calculation since it is in a different year
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2018, 4, 1))
+
+        savings = app_processes.getYearSavings(self.year, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+    def test_getYearSavings_with_expenses(self):
+        """
+        Test that the total savings in the selected year is correct when
+        there are expenses within that year.
+        """
+
+        # expected = 50 * 365 - 10 - 10 = 18230
+        expected = self.dailyBudget * self.numDaysInYear - self.cost - self.cost
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 1, 1))
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2019, 12, 31))
+
+        savings = app_processes.getYearSavings(self.year, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
+
+
+    def test_getYearSavings_in_leap_year_with_expenses(self):
+        """
+        Test that the total savings the selected leap year is correct when
+        there are expenses within that year.
+        """
+
+        # expected = 50 * 366 - 10 - 10 = 18280
+        expected = self.dailyBudget * 366 - self.cost - self.cost
+
+        budget = self.create_budget(self.user_id, self.dailyBudget, self.budgetCreationDate)
+
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2020, 1, 1))
+        self.create_and_save_expense(self.user_id, "item1", self.cost, "category", date(2020, 12, 31))
+
+        savings = app_processes.getYearSavings(2020, budget, self.user_id)
+
+        self.assertEqual(savings, expected)
 
 
 if __name__ == '__main__':

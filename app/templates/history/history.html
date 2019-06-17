@@ -5,35 +5,33 @@
 {% block head %}
   <link href="{{ url_for('static', filename='css/history.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script>var minDate = '{{ minDate }}'</script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 {% endblock %}
 {% block body %}
 
 <div class="history-main-container">
 
-  <div class="history-left-side-container">
-    <div class="date-selection">
+  <div id="history-left-side-container">
+    <div class="date-option-container">
       <div class="month-button">
-        January
+        Date Range
       </div>
-      <div class="month-button">
-        February
-      </div>
-      <div class="month-button">
-        March
-      </div>
+    </div>
+    <div class="date-input-container">
+      <input type="text" id="dateInput" placeholder="Select Date">
     </div>
   </div>
 
-  <div class="history-right-side-container">
+  <div id="history-right-side-container">
 
     <div class="toggle-display">
     </div>
 
     <div class="summary-container">
-      <div class="summary-block">
-        <p>Year-to-Date Savings</p>
-        <p id="ytd-savings">0</p>
+      <div class="summary-sub-container">
+        <p id="year-savings">Year-to-Date Savings</p>
+        <p id="year-savings-value" class="savings-value">{{ savings }}</p>
       </div>
     </div>
 

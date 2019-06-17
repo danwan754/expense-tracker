@@ -168,7 +168,7 @@ def getAllBudgetsRemaining(budget, id):
     return allBudgetsRemain
 
 
-def getSavings(budget, id):
+def getYearToDateSavings(budget, id):
     """
     Params:
         budget: A Budget object.
@@ -197,28 +197,26 @@ def getSavings(budget, id):
     return savings
 
 
-def getMonthSavings(month, year, budget, id):
+def getMonthSavings(month, year, todayDate, budget, id):
     """
     Params:
         month: Month as a number where 1 = January, 12 = December
         year: Year as a number. Ex.: 2019
         budget: A Budget object.
         id: user ID.
-    Returns the total savings for month.
+    Returns the total savings for month of year.
     """
 
     numDaysInMonth = monthrange(year, month)[1]
     firstDate = date(year, month, 1)
     lastDate = date(year, month, numDaysInMonth)
 
-    # if budget created this month and year, calculate partial month budget starting from from budget creation date
+    # if budget created in same month and year, calculate partial month budget starting from from budget creation date
     if budget.creation_date.month == month and budget.creation_date.year == year:
 
-        today = datetime.now().date()
-
         # if budget created on same month and year as today, calculate partial month budget from creation date to today
-        if today.month == budget.creation_date.month and today.year == budget.creation_date.year:
-            timeDiff = today - budget.creation_date
+        if todayDate.month == budget.creation_date.month and todayDate.year == budget.creation_date.year:
+            timeDiff = todayDate - budget.creation_date
 
         else:
             timeDiff = lastDate - budget.creation_date
@@ -249,8 +247,61 @@ def getDaySavings(date, budget, id):
         date: A Date object.
         budget: A Budget object.
         id: user ID.
-    Returns the total savings this date.
+    Returns the total savings for date.
     """
+
+    dailyBudget = budget.daily
+
+    expenses = Expense.query.filter(Expense.user_id==id, Expense.date==date).with_entities(func.sum(Expense.cost).label('total')).scalar()
+
+    if expenses:
+        expenses = roundCost(expenses)
+    else:
+        expenses = 0
+
+    savings = dailyBudget - expenses
+
+    return savings
+
+
+def getYearSavings(year, budget, id):
+    """
+    Params:
+        date: A Date object.
+        budget: A Budget object.
+        id: user ID.
+    Returns the total savings for year in date.
+    """
+
+    creationYear = budget.creation_date.year
+
+    # if the selected year is during year that budget was created, get savings for that year where starting day is budget creation date
+    if creationYear == year:
+        return getYearToDateSavings(budget, id)
+
+    # January 1 of selected year
+    firstDayOfYear = date(year, 1, 1)
+
+    # December 31 of selected year
+    lastDayOfYear = date(year, 12, 31)
+
+    numDaysInYear = 365
+
+    expenses = Expense.query.filter(Expense.user_id==id, Expense.date>=firstDayOfYear, Expense.date<=lastDayOfYear).with_entities(func.sum(Expense.cost).label('total')).scalar()
+
+    if expenses:
+        expenses = roundCost(expenses)
+    else:
+        expenses = 0
+
+    if (isleap(year)):
+        numDaysInYear = 366
+
+    yearBudget = budget.daily * numDaysInYear
+
+    savings = yearBudget - expenses
+
+    return savings
 
 
 def roundCost(cost):
