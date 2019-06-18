@@ -125,9 +125,9 @@ document.getElementById('edit-budget-submit-button').addEventListener('click', f
 
     // display the budgets
     if (response.data.success) {
-      document.getElementById('budget-daily').innerHTML = response.data.budget.today;
-      document.getElementById('budget-weekly').innerHTML = response.data.budget.week;
-      document.getElementById('budget-monthly').innerHTML = response.data.budget.month;
+      document.getElementById('budget-daily').innerHTML = response.data.budget.today.toFixed(2);
+      document.getElementById('budget-weekly').innerHTML = response.data.budget.week.toFixed(2);
+      document.getElementById('budget-monthly').innerHTML = response.data.budget.month.toFixed(2);
       // document.getElementById('budget-yearly').innerHTML = response.data.budget.yearly;
       editBudgetModal.style.display = "none";
       editBudgetModal.style.display = "none";
