@@ -6,19 +6,18 @@
   <div id="edit-budget-error" class="error-message"></div>
   <form id="edit-budget-form" method="POST">
     {{ budgetForm.csrf_token }}
-    {{ budgetForm.daily.label }} </br>
-    {{ budgetForm.daily(size=60) }} </br></br>
+    {{ budgetForm.dailyBudgetField.label }} </br>
+    {{ budgetForm.dailyBudgetField(size=60) }} </br></br>
 
-    {{ budgetForm.weekly.label }} </br>
-    {{ budgetForm.weekly(size=60) }} </br></br>
+    {{ budgetForm.weeklyBudgetField.label }} </br>
+    {{ budgetForm.weeklyBudgetField(size=60) }} </br></br>
 
-    {{ budgetForm.monthly.label }} </br>
-    {{ budgetForm.monthly(size=60) }} </br></br>
+    {{ budgetForm.monthlyBudgetField.label }} </br>
+    {{ budgetForm.monthlyBudgetField(size=60) }} </br></br>
 
+    {{ budgetForm.yearlyBudgetField.label }} </br>
+    {{ budgetForm.yearlyBudgetField(size=60) }} </br></br>
 
     <input id="edit-budget-submit-button" type="submit" value="Add">
   </form>
 {% endblock %}
-
-<!-- { budgetForm.yearly.label } </br> -->
-<!-- { budgetForm.yearly(size=60) } </br></br> -->

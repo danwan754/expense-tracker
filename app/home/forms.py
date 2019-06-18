@@ -20,8 +20,8 @@ class BudgetForm(FlaskForm):
     """
     Form for editing budgets
     """
-    daily = DecimalField('Daily')
-    weekly = DecimalField('Weekly')
-    monthly = DecimalField('Monthly')
-    # yearly = DecimalField('Yearly')
-    submit = SubmitField('Apply')
+    dailyBudgetField = DecimalField('Daily')
+    weeklyBudgetField = DecimalField('Weekly')
+    monthlyBudgetField = DecimalField('Monthly')
+    yearlyBudgetField = DecimalField('Yearly')
+    submitBudgetField = SubmitField('Apply')

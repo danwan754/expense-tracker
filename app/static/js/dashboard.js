@@ -12,34 +12,58 @@ var editBudgetBtn = document.getElementById("edit-budget-button");
 var closeAddExpense = document.getElementById("close-add-expense");
 var closeEditBudget = document.getElementById("close-edit-budget");
 
-// open the modals
+// budget input fields
+var dailyBudgetField = document.getElementById("dailyBudgetField");
+var weeklyBudgetField = document.getElementById("weeklyBudgetField");
+var monthlyBudgetField = document.getElementById("monthlyBudgetField");
+var yearlyBudgetField = document.getElementById("yearlyBudgetField");
+
+
+// onclick listeners to open the modals
 addExpenseBtn.onclick = function() {
   addExpenseModal.style.display = "block";
 }
-
 editBudgetBtn.onclick = function() {
   editBudgetModal.style.display = "block";
 }
 
-// close the modals
+// onclick listeners to close the modals
 closeAddExpense.onclick = function() {
   addExpenseModal.style.display = "none";
 }
-
 closeEditBudget.onclick = function() {
   editBudgetModal.style.display = "none";
 }
 
 
-
-// // When the user clicks anywhere outside of the modal, close it
-// window.onclick = function(event) {
-//   if (event.target == modal) {
-//     modal.style.display = "none";
-//   }
-// }
-
-
+// input listeners to update all the budget input fields when any field recieves input
+dailyBudgetField.addEventListener("input", function() {
+  var value = dailyBudgetField.value;
+  weeklyBudgetField.value = (value * 7.0).toFixed(2);
+  monthlyBudgetField.value = (value * 30.0).toFixed(2);
+  yearlyBudgetField.value = (value * 365).toFixed(2);
+});
+weeklyBudgetField.addEventListener("input", function() {
+  var value = weeklyBudgetField.value;
+  var dailyValue = value / 7.0;
+  dailyBudgetField.value = dailyValue.toFixed(2);
+  monthlyBudgetField.value = (dailyValue * 30.0).toFixed(2);
+  yearlyBudgetField.value = (dailyValue * 365).toFixed(2);
+});
+monthlyBudgetField.addEventListener("input", function() {
+  var value = monthlyBudgetField.value;
+  var dailyValue = value / 30.0;
+  dailyBudgetField.value = dailyValue.toFixed(2);
+  weeklyBudgetField.value = (dailyValue * 7.0).toFixed(2);
+  yearlyBudgetField.value = (dailyValue * 365).toFixed(2);
+});
+yearlyBudgetField.addEventListener("input", function() {
+  var value = yearlyBudgetField.value;
+  var dailyValue = value / 365.0;
+  dailyBudgetField.value = dailyValue.toFixed(2);
+  weeklyBudgetField.value = (dailyValue * 7.0).toFixed(2);
+  monthlyBudgetField.value = (dailyValue * 30.0).toFixed(2);
+});
 
 // post new expense for today and display new expense on today's expense table
 document.getElementById("add-expense-submit-button").addEventListener("click", function(event) {

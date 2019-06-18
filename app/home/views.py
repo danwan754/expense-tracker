@@ -90,10 +90,10 @@ def editBudget():
             budget = Budget(user_id=current_user.id)
             budget.creation_date = date.today()
 
-        budget.daily = form.data["daily"]
-        budget.weekly = form.data["weekly"]
-        budget.monthly = form.data["monthly"]
-        # budget.yearly = form.data["yearly"]
+        budget.daily = form.data["dailyBudgetField"]
+        # budget.weekly = form.data["weeklyBudgetField"]
+        # budget.monthly = form.data["monthlyBudgetField"]
+        # budget.yearly = form.data["yearlyBudgetField"]
         db.session.add(budget)
         db.session.commit()
 
