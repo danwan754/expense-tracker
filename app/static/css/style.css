@@ -25,7 +25,7 @@ ul.nav {
 
 ul.nav li a {
   display: block;
-  color: #a6a6a6;
+  color: #4dacff;
   font-size: 18px;
   text-align: center;
   padding: 14px 16px;
@@ -33,10 +33,10 @@ ul.nav li a {
 }
 
 ul.nav li a:hover {
-  color: #666666;
+  color: #005299;
 }
 
-ul.nav li a.active {background-color: #4CAF50;}
+ul.nav li a.active {background-color: #007ae6;}
 
 ul.nav li {float: right;}
 
@@ -52,6 +52,13 @@ ul.nav li.left {float: left;}
   height: auto !important;
   height: 100%;
   margin: 0 auto -4em;
+}
+
+.nav-divider {
+  width: 90%;
+  margin: auto;
+  border-color: #80c3ff;
+  opacity: 0.25;
 }
 
 /**/
@@ -130,7 +137,7 @@ form {
   width: 90%;
   padding: 50px 0;
   text-align: center;
-  border-top: 1px solid #e7e7e7;
+  /* border-top: 1px solid #e7e7e7; */
 }
 
 .dashboard-row {
@@ -142,7 +149,7 @@ form {
 .dash-wrapper {
   padding: 10px;
   border-radius: 15px;
-  border: solid #d9d9d9 1px;
+  border: 1px #66b5ff solid;
 }
 
 .margin-down {
@@ -240,13 +247,13 @@ form {
 /* the item name table heading */
 .today-expense-table th:first-child {
   width: 60%;
-  background-color: #e6e6e6;
+  background-color: #e6f3ff;
   /* border: solid blue 1px; */
 }
 
 .today-expense-table th:last-child {
   width: 40%;
-  background-color: #cccccc;
+  background-color: #cce6ff;
   /* border: solid black 1px; */
 }
 
@@ -275,12 +282,16 @@ form {
   text-align: center;
 }
 
+.budget-table td {
+  padding-top: 20px;
+}
+
 .budget-table th:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #cce6ff;
 }
 
 .budget-table th:nth-child(odd) {
-  background-color: #e6e6e6;
+  background-color: #e6f3ff;
 }
 
 .budget-container p {
@@ -340,9 +351,9 @@ form {
 
 .round-button {
   border-radius: 25%;
-  border: 2px solid #cfdcec;
+  border: 1px solid #80c3ff;
   overflow: hidden;
-  background: #f2f2f2;
+  background: #e6f3ff;
   text-align: center;
   padding: 10px 10px 10px 10px;
   display: inline-block;
@@ -350,5 +361,9 @@ form {
 }
 
 .round-button:hover {
-  background: #cccccc;
+  background: #b3daff;
+}
+
+.round-button:active {
+  background: #99ceff;
 }
