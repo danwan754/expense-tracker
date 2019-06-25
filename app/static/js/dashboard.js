@@ -18,10 +18,17 @@ var weeklyBudgetField = document.getElementById("weeklyBudgetField");
 var monthlyBudgetField = document.getElementById("monthlyBudgetField");
 var yearlyBudgetField = document.getElementById("yearlyBudgetField");
 
+var dateAddExpenseField = document.getElementById('date');
+
+var dateComponentsArr = new Date().toLocaleDateString().split('/');
+var todayDate = dateComponentsArr[2] + "-" + dateComponentsArr[1] + "-" + dateComponentsArr[0];
 
 // onclick listeners to open the modals
 addExpenseBtn.onclick = function() {
   addExpenseModal.style.display = "block";
+  // document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+  dateAddExpenseField.value = todayDate;
+
 }
 editBudgetBtn.onclick = function() {
   editBudgetModal.style.display = "block";
@@ -73,11 +80,11 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
 
   // post new expense
   var data = new FormData(addExpenseForm);
-  axios.post('/add-expense', data)
+  axios.post('/api/users/1/expenses', data)
   .then(function(response) {
 
     // display posted expense to today's expense table
-    if (response.data.success) {
+    if (response.status == 201) {
       var expenseTable = document.getElementsByClassName("today-expense-table")[0];
       var newRow = expenseTable.insertRow(2);
       var newCell = newRow.insertCell(0);
@@ -117,14 +124,17 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
 // post budgets
 document.getElementById('edit-budget-submit-button').addEventListener('click', function(event) {
   event.preventDefault();
-  var budgetError = document.getElementById('budget-error');
+  var budgetError = document.getElementById('edit-budget-error');
   var budgetForm = document.getElementById("edit-budget-form");
+  // var data = new FormData();
+  // data.append('csrf_token', csrf_token);
+  // data.append('dailyBudgetField', '1.0');
   var data = new FormData(budgetForm);
   axios.post('/edit-budget', data)
   .then(function(response) {
 
     // display the budgets
-    if (response.data.success) {
+    if (response.status_code == 200) {
       document.getElementById('budget-daily').innerHTML = response.data.budget.today.toFixed(2);
       document.getElementById('budget-weekly').innerHTML = response.data.budget.week.toFixed(2);
       document.getElementById('budget-monthly').innerHTML = response.data.budget.month.toFixed(2);

@@ -3,10 +3,9 @@
 # third-party imports
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-# import logging
-
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
 
 # local imports
 from config import app_config
@@ -15,6 +14,8 @@ from config import app_config
 db = SQLAlchemy()
 
 login_manager = LoginManager()
+
+csrf = CSRFProtect()
 
 # # stop sqlalchemy output in terminal
 # sqla_logger = logging.getLogger('sqlalchemy')
@@ -33,6 +34,9 @@ def create_app(config_name):
 
     db.init_app(app)
 
+    # enable global csrf protection
+    csrf.init_app(app)
+
     login_manager.init_app(app)
     login_manager.login_message = "You must be logged in to access this page."
     login_manager.login_view = "auth.login"
@@ -48,5 +52,9 @@ def create_app(config_name):
 
     from .history import history as history_blueprint
     app.register_blueprint(history_blueprint)
+
+    from .api import bp as api_bp
+    # app.register_blueprint(users_api)
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     return app

@@ -40,6 +40,19 @@ class User(UserMixin, db.Model):
         """
         return check_password_hash(self.password_hash, password)
 
+
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'email': self.email,
+            '_links': {
+                'self': url_for('api.get_user', id=self.id),
+                'expenses': url_for('api.get_expenses', id=self.id),
+                'budget': url_for('api.get_budget', id=self.id)
+            }
+        }
+
     def __repr__(self):
         return '<User: {}>'.format(self.email)
 
@@ -95,6 +108,16 @@ class Expense(db.Model):
     category = db.Column(db.String(60))
     date = db.Column(db.Date)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'item': self.item,
+            'cost': self.cost,
+            'category': self.category,
+            'date': self.date
+        }
+        return data
 
     def __repr__(self):
         return '<Expense: {}>'.format(self.item)

@@ -1,7 +1,7 @@
 # app/home/forms.py
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField, DecimalField
+from wtforms import StringField, SelectField, SubmitField, DecimalField, DateField
 from wtforms.validators import DataRequired
 
 # from ..models import Category
@@ -13,6 +13,7 @@ class ExpenseForm(FlaskForm):
     item = StringField('Item', validators=[DataRequired("Item is required.")])
     cost = DecimalField('Cost', validators=[DataRequired("Cost is required.")])
     category = SelectField('Category', choices=[("1", "one"), ("2", "two")])
+    date = DateField('Date', validators=[DataRequired("Date is required.")])
     submit = SubmitField('Add')
 
 

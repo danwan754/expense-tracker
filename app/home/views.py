@@ -1,6 +1,6 @@
 # app/home/views.py
 
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request
 from flask_login import login_required, current_user
 from sqlalchemy.sql import func
 
@@ -50,29 +50,29 @@ def dashboard():
     return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budgetsRemaining, savings=savings, expenseForm=expenseForm, budgetForm=budgetForm)
 
 
-@home.route('/add-expense', methods=['POST'])
-@login_required
-def addExpense():
-    """
-    Add an expense for today.
-    """
-
-    form = ExpenseForm()
-    if form.validate_on_submit():
-        expense = Expense(item=form.item.data,
-                          cost=form.cost.data,
-                          category=form.category.data,
-                          date=date.today(),
-                          user_id=current_user.id)
-        db.session.add(expense)
-        db.session.commit()
-
-        resp = jsonify(success=True, item=form.item.data, cost=float(form.cost.data))
-        resp.status_code = 201
-    else:
-        resp = jsonify(success=False, errors=form.errors)
-
-    return resp
+# @home.route('/add-expense', methods=['POST'])
+# @login_required
+# def addExpense():
+#     """
+#     Add an expense for today.
+#     """
+#
+#     form = ExpenseForm(request.form)
+#     if form.validate_on_submit():
+#         expense = Expense(item=form.item.data,
+#                           cost=form.cost.data,
+#                           category=form.category.data,
+#                           date=date.today(),
+#                           user_id=current_user.id)
+#         db.session.add(expense)
+#         db.session.commit()
+#
+#         resp = jsonify(success=True, item=form.item.data, cost=float(form.cost.data))
+#         resp.status_code = 201
+#     else:
+#         resp = jsonify(success=False, errors=form.errors)
+#
+#     return resp
 
 
 @home.route('/edit-budget', methods=['POST'])
@@ -82,8 +82,9 @@ def editBudget():
     Edit budgets and return the recalculated remaining budgets.
     """
 
-    form = BudgetForm()
-    if form.validate_on_submit():
+    form = BudgetForm(request.form)
+    # if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         budget = Budget.query.filter_by(user_id=current_user.id).first()
 
         if not budget:
@@ -103,7 +104,8 @@ def editBudget():
         resp = jsonify(success=True,
                        budget=budgetsRemaining)
     else:
-        resp = jsonify(sucess=False)
+        resp = jsonify(sucess=False,
+                        errors=form.errors)
 
     return resp
 
