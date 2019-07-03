@@ -89,8 +89,7 @@ function addListenerToDeleteRow(element){
     // delete expense from server
     axios.delete('/api/users/expenses', {
       data: {
-        item: item,
-        cost: cost
+        id: row.id
       }
     })
     .then(response => {
@@ -134,7 +133,8 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
     // display posted expense to today's expense table
     if (response.status == 201) {
       var expenseTable = document.getElementsByClassName("today-expense-table")[0];
-      var newRow = expenseTable.insertRow(3);
+      var newRow = expenseTable.insertRow(2);
+      newRow.id = response.data.id;
       var newCell = newRow.insertCell(0);
       newCell.innerHTML = response.data.item;
       newCell = newRow.insertCell(1);

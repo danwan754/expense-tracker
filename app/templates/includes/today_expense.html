@@ -11,7 +11,7 @@
     </tr>
     {% if today_expenses %}
       {% for expense in today_expenses %}
-        <tr>
+        <tr id='{{ expense.id }}'>
           <td>{{ expense.item }}</td>
           <td>{{ expense.cost }}</td>
           <td><div class="delete-expense">x</div></td>

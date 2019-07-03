@@ -15,7 +15,7 @@ from ..home.forms import ExpenseForm, BudgetForm
 
 @bp.route('/users/expenses', methods=['POST'])
 @login_required
-def create_expense(id):
+def create_expense():
 
     form = ExpenseForm(request.form)
     if form.validate_on_submit():
@@ -57,8 +57,26 @@ def update_expense(id):
 
 @bp.route('/users/expenses', methods=['DELETE'])
 def delete_expense():
-    # resp = {'status': 'ok'}
-    return '200'
+    """
+    Delete expense with the provided item name, cost, and date
+    """
+
+    data = request.get_json()
+    id = data['id']
+
+    expense = Expense.query.filter(Expense.user_id==current_user.id, Expense.id==id).first()
+
+    if expense:
+        db.session.delete(expense)
+        db.session.commit()
+
+    resp = jsonify(success=True)
+    resp.status_code = 204
+    return resp
+
+
+
+
 
 
 

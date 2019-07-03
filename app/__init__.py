@@ -56,5 +56,6 @@ def create_app(config_name):
     from .api import bp as api_bp
     # app.register_blueprint(users_api)
     app.register_blueprint(api_bp, url_prefix='/api')
+    csrf.exempt(api_bp)
 
     return app
