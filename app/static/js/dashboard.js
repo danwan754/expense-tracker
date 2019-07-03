@@ -81,11 +81,7 @@ function addListenerToDeleteRow(element){
   element.addEventListener('click', function() {
 
     var row = element.parentNode.parentNode;
-    // console.log(row.nodeName);
-    var cost = row.cells[1].innerHTML;
-    var item = row.cells[0].innerHTML;
-    // console.log("cost: " + cost);
-    // console.log("item:" + item);
+
     // delete expense from server
     axios.delete('/api/users/expenses', {
       data: {
@@ -178,9 +174,6 @@ document.getElementById('edit-budget-submit-button').addEventListener('click', f
   event.preventDefault();
   var budgetError = document.getElementById('edit-budget-error');
   var budgetForm = document.getElementById("edit-budget-form");
-  // var data = new FormData();
-  // data.append('csrf_token', csrf_token);
-  // data.append('dailyBudgetField', '1.0');
   var data = new FormData(budgetForm);
   axios.post('/edit-budget', data)
   .then(function(response) {
