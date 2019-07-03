@@ -20,6 +20,9 @@ var yearlyBudgetField = document.getElementById("yearlyBudgetField");
 
 var dateAddExpenseField = document.getElementById('date');
 
+// get all the delete buttons in the today-expense table
+var deleteButtons = document.getElementsByClassName('delete-expense');
+
 var dateComponentsArr = new Date().toLocaleDateString().split('/');
 var todayDate = dateComponentsArr[2] + "-" + dateComponentsArr[1] + "-" + dateComponentsArr[0];
 
@@ -72,7 +75,52 @@ yearlyBudgetField.addEventListener("input", function() {
   monthlyBudgetField.value = (dailyValue * 30.0).toFixed(2);
 });
 
-// post new expense for today and display new expense on today's expense table
+
+// event listener to delete row on today-expense table
+function addListenerToDeleteRow(element){
+  element.addEventListener('click', function() {
+
+    var row = element.parentNode.parentNode;
+    // console.log(row.nodeName);
+    var cost = row.cells[1].innerHTML;
+    var item = row.cells[0].innerHTML;
+    // console.log("cost: " + cost);
+    // console.log("item:" + item);
+    // delete expense from server
+    axios.delete('/api/users/expenses', {
+      data: {
+        item: item,
+        cost: cost
+      }
+    })
+    .then(response => {
+      // delete the row
+      row.remove();
+    })
+    .catch(error => {
+      console.log(error)
+    });
+
+  });
+}
+
+// create a delete button element
+function createDeleteButton() {
+  var divEle = document.createElement('div');
+  divEle.className = 'delete-expense';
+  divEle.innerHTML = 'x';
+  addListenerToDeleteRow(divEle);
+  return divEle;
+}
+
+// add event listener to every delete button in today-expense table
+for (var i=0; i<deleteButtons.length; i++) {
+  addListenerToDeleteRow(deleteButtons[i]);
+}
+
+
+
+// post new expense for today and display on today's expense table
 document.getElementById("add-expense-submit-button").addEventListener("click", function(event) {
   event.preventDefault();
   var addExpenseError = document.getElementById("add-expense-error");
@@ -80,17 +128,21 @@ document.getElementById("add-expense-submit-button").addEventListener("click", f
 
   // post new expense
   var data = new FormData(addExpenseForm);
-  axios.post('/api/users/1/expenses', data)
+  axios.post('/api/users/expenses', data)
   .then(function(response) {
 
     // display posted expense to today's expense table
     if (response.status == 201) {
       var expenseTable = document.getElementsByClassName("today-expense-table")[0];
-      var newRow = expenseTable.insertRow(2);
+      var newRow = expenseTable.insertRow(3);
       var newCell = newRow.insertCell(0);
       newCell.innerHTML = response.data.item;
       newCell = newRow.insertCell(1);
       newCell.innerHTML = response.data.cost;
+      newCell = newRow.insertCell(2);
+      var newDeleteButton = createDeleteButton();
+      newCell.appendChild(newDeleteButton);
+
       addExpenseModal.style.display = "none";
       addExpenseError.style.display = "none";
 

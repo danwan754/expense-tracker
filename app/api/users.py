@@ -13,25 +13,10 @@ from ..home.forms import ExpenseForm, BudgetForm
 
 
 
-@bp.route('/users/<int:id>/expenses', methods=['POST'])
+@bp.route('/users/expenses', methods=['POST'])
 @login_required
 def create_expense(id):
 
-    # item = request.args['item']
-    # cost = request.args['cost']
-    # category = request.args['category']
-    # date = request.args['date']
-    #
-    # if item and cost and category and date:
-    #
-    #     expense = Expense(
-    #         item = item,
-    #         cost = cost,
-    #         category = category,
-    #         date = date
-    #     )
-    #     db.session.add(expense)
-    #     db.session.commit()
     form = ExpenseForm(request.form)
     if form.validate_on_submit():
         expense = Expense(item=form.item.data,
@@ -53,26 +38,27 @@ def create_expense(id):
     return resp
 
 
-@bp.route('/users/<int:id>/expenses', methods=['GET'])
-def get_expenses(id):
+@bp.route('/users/expenses', methods=['GET'])
+def get_expenses():
     """ get date from arguments"""
     pass
 
 
-@bp.route('/users/<int:user_id>/expenses/<int:expense_id>', methods=['GET'])
-def get_expense(user_id, expense_id):
-
+@bp.route('/users/expenses', methods=['GET'])
+def get_expense():
+    """ get expenses for a date"""
     return jsonify(Expense.query.get_or_404(expense_id).to_dict())
 
 
-@bp.route('/users/<int:id>', methods=['PUT'])
+@bp.route('/users/expenses', methods=['PUT'])
 def update_expense(id):
     pass
 
 
-@bp.route('/users/<int:id>', methods=['DELETE'])
-def delete_expense(id):
-    pass
+@bp.route('/users/expenses', methods=['DELETE'])
+def delete_expense():
+    # resp = {'status': 'ok'}
+    return '200'
 
 
 

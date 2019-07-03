@@ -246,20 +246,30 @@ form {
 
 /* the item name table heading */
 .today-expense-table th:first-child {
-  width: 60%;
+  width: 55%;
   background-color: #e6f3ff;
   /* border: solid blue 1px; */
 }
 
-.today-expense-table th:last-child {
+.today-expense-table th:nth-child(2) {
   width: 40%;
   background-color: #cce6ff;
+}
+
+
+.today-expense-table th:last-child {
+  /* width: 5%; */
+  /* background-color: #cce6ff; */
   /* border: solid black 1px; */
 }
 
 .today-expense-container p {
   margin-top: 30px;
   text-align: center;
+}
+
+.delete-expense {
+  border: 1px solid black;
 }
 
 /**/
