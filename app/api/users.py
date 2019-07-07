@@ -40,18 +40,26 @@ def create_expense():
 
 @bp.route('/users/expenses', methods=['GET'])
 def get_expenses():
-    """ get date from arguments"""
-    pass
+    """ get expenses on the provided date"""
+
+    date = request.args['date']
+
+    expenses = Expense.query.filter(Expense.user_id==current_user.id,
+                                    Expense.date==date)
+
+    # for expense in expenses:
+
+
 
 
 @bp.route('/users/expenses', methods=['GET'])
 def get_expense():
-    """ get expenses for a date"""
+    """ get an expense"""
     return jsonify(Expense.query.get_or_404(expense_id).to_dict())
 
 
 @bp.route('/users/expenses', methods=['PUT'])
-def update_expense(id):
+def update_expense():
     pass
 
 
@@ -77,9 +85,6 @@ def delete_expense():
 
 
 
-
-
-
-@bp.route('/users/<int:id>/budget', methods=['GET'])
-def get_budget(id):
+@bp.route('/users/budget', methods=['GET'])
+def get_budget():
     pass

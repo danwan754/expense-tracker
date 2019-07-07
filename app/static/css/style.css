@@ -118,7 +118,11 @@ form {
 }
 
 .intro-message > h1 {
-  color: red;
+  color: #3399ff;
+}
+
+.intro-message > h3 {
+  color: #4da6ff;
 }
 
 .intro-divider {
