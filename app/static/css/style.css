@@ -197,6 +197,7 @@ form {
   background-color: #fefefe;
   margin: auto;
   padding: 20px;
+  padding-bottom: 50px;
   border: 1px solid #888;
   border-radius: 10px;
   width: 80%;
@@ -223,13 +224,13 @@ form {
   text-align: left;
 } */
 
-.today-expense-table {
+#today-expense-table {
   border-collapse: collapse;
   width: 100%;
   /* margin: 0; */
 }
 
-.today-expense-table th {
+#today-expense-table th {
   text-align: center;
 }
 
@@ -238,46 +239,28 @@ form {
   height: 20px;
 }
 
-.today-expense-table tr {
+#today-expense-table tr {
   border-bottom: 1px solid #cccccc;
 }
 
-.today-expense-table tr:first-child {
+#today-expense-table tr:first-child {
   border-bottom: hidden;
 }
 
-.today-expense-table td {
+#today-expense-table td {
   padding-top: 6px;
   padding-bottom: 6px;
 }
 
 
-
-
-/* .today-expense-table col:nth-child(1) {
-  width: 10%;
-}
-
-.today-expense-table col:nth-child(2) {
-  width: 40%;
-}
-
-.today-expense-table col:nth-child(3) {
-  width: 40%;
-}
-
-.today-expense-table col:nth-child(4) {
-  width: 10%;
-} */
-
 /* the item name table heading */
-.today-expense-table th:nth-child(1) {
+#today-expense-table th:nth-child(1) {
   background-color: #e6f3ff;
   width: 50%;
 }
 
 /* cost table heading */
-.today-expense-table th:nth-child(2) {
+#today-expense-table th:nth-child(2) {
   background-color: #cce6ff;
   width: 45%;
 }
@@ -352,12 +335,49 @@ form {
 
 /* /templates/includes/modal/add-expense-expense_form.html */
 
+.add-expense-form-container {
+  /* border: solid 1px black; */
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
 #add-expense-error {
   display: none;
+  /* border: 1px solid black; */
 }
 
 #edit-budget-error {
   display: none;
+}
+
+#add-expense-form {
+
+}
+
+#delete-expense-button {
+  display: none;
+  border: 1px solid red;
+  border-radius: 10px;
+  float: right;
+  padding: 5px;
+  background-color: #e59a9a;
+  font-weight: bold;
+}
+
+#delete-expense-button:hover {
+  background-color: #ff8080;
+}
+
+#delete-expense-button:active {
+  background-color: #ff4d4d;
+}
+
+#add-expense-submit-button {
+  background-color: #99ff99;
+  padding: 5px;
+  margin-top: 10px;
+
 }
 
 /***/

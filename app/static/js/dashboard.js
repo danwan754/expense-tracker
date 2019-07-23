@@ -27,6 +27,7 @@ var costAddExpenseField = document.getElementById('cost');
 var categoryExpenseField = document.getElementById('category');
 var submitExpenseButton = document.getElementById("add-expense-submit-button");
 var modalHeader = addExpenseModal.querySelector("h2");
+var deleteExpenseBtn = document.getElementById("delete-expense-button");
 
 // // get all the delete buttons in the today-expense table
 // var deleteButtons = document.getElementsByClassName('delete-expense');
@@ -48,6 +49,7 @@ addExpenseBtn.onclick = function() {
   categoryExpenseField.value = null;
   addExpenseModal.style.display = "block";
   dateAddExpenseField.value = todayDate;
+  deleteExpenseBtn.style.display = "none";
 }
 editBudgetBtn.onclick = function() {
   editBudgetModal.style.display = "block";
@@ -94,36 +96,34 @@ yearlyBudgetField.addEventListener("input", function() {
 
 
 // event listener to delete row on today-expense table
-function addListenerToDeleteRow(element){
-  element.addEventListener('click', function() {
+document.getElementById("delete-expense-button").addEventListener('click', function() {
+  // var expenseTable = document.getElementById("today-expense-table")
+  var row = document.getElementById(currentExpenseID);
 
-    var row = element.parentNode.parentNode;
-
-    // delete expense from server
-    axios.delete('/api/users/expenses', {
-      data: {
-        id: row.id
-      }
-    })
-    .then(response => {
-      // delete the row
-      row.remove();
-    })
-    .catch(error => {
-      console.log(error)
-    });
-
+  // delete expense from server
+  axios.delete('/api/users/expenses', {
+    data: {
+      id: currentExpenseID
+    }
+  })
+  .then(response => {
+    // delete the row
+    row.remove();
+    addExpenseModal.style.display = "none";
+  })
+  .catch(error => {
+    console.log(error)
   });
-}
+});
 
-// create a delete button component
-function createDeleteButton() {
-  var divEle = document.createElement('div');
-  divEle.className = 'delete-expense';
-  divEle.innerHTML = 'x';
-  addListenerToDeleteRow(divEle);
-  return divEle;
-}
+// // create a delete button component
+// function createDeleteButton() {
+//   var divEle = document.createElement('div');
+//   divEle.className = 'delete-expense';
+//   divEle.innerHTML = 'x';
+//   addListenerToDeleteRow(divEle);
+//   return divEle;
+// }
 
 // create a edit button component for expense
 function createEditButton() {
@@ -145,7 +145,8 @@ function openEditModal(id = 0) {
     costAddExpenseField.value = row.cells[1].innerHTML;
     categoryExpenseField.value = row.getAttribute("data-category");
     submitExpenseButton.value = "Confirm Changes";
-    console.log(row.getAttribute("data-category"));
+    // addExpenseModal.appendChild(deleteButton);
+    deleteExpenseBtn.style.display = "block";
   }
   else {
     modalHeader.innerHTML = "Add Expense";
@@ -190,7 +191,7 @@ for (var i=0; i<editButtons.length; i++) {
   addListenerToEditExpense(editButtons[i]);
 }
 
-// var expenseTable = document.getElementsByClassName("today-expense-table")[0];
+// var expenseTable = document.getElementById("today-expense-table");
 // for (var i=0; i<expenseTable.rows.length; i++) {
 //   console.log(expenseTable.rows[i].id + " : " + expenseTable.rows[i].getAttribute("data-category"));
 // }
@@ -210,7 +211,7 @@ submitExpenseButton.addEventListener("click", function(event) {
 
       // display posted expense to today's expense table
       if (response.status == 201) {
-        var expenseTable = document.getElementsByClassName("today-expense-table")[0];
+        var expenseTable = document.getElementById("today-expense-table");
         var newRow = expenseTable.insertRow(2);
         newRow.id = response.data.id;
         newRow.setAttribute("data-category", response.data.category);

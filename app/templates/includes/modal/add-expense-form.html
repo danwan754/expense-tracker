@@ -1,23 +1,29 @@
 <!-- /templates/includes/modal/add-expense-expenseForm.html -->
 
 {% block body %}
-  <h2>Add Expense</h2>
-  </br>
-  <div id="add-expense-error" class="error-message"></div>
-  <form id="add-expense-form" method="POST" action="/add-expense">
-    {{ expenseForm.csrf_token }}
-    {{ expenseForm.item.label }} </br>
-    {{ expenseForm.item(size=60) }} </br></br>
+  <div class="add-expense-form-container">
+    <h2>Add Expense</h2>
+    </br>
+    <div id="add-expense-error" class="error-message"></div>
+    <form id="add-expense-form" method="POST">
+      {{ expenseForm.csrf_token }}
+      {{ expenseForm.item.label }} </br>
+      {{ expenseForm.item(size=60) }} </br></br>
 
-    {{ expenseForm.cost.label }} </br>
-    {{ expenseForm.cost(size=60) }} </br></br>
+      {{ expenseForm.cost.label }} </br>
+      {{ expenseForm.cost(size=60) }} </br></br>
 
-    {{ expenseForm.category.label }} </br>
-    {{ expenseForm.category }} </br></br>
+      {{ expenseForm.category.label }} </br>
+      {{ expenseForm.category }} </br></br>
 
-    {{ expenseForm.date.label }} </br>
-    {{ expenseForm.date }} </br></br>
+      {{ expenseForm.date.label }} </br>
+      {{ expenseForm.date }} </br></br>
 
-    <input id="add-expense-submit-button" type="submit" value="Add">
-  </form>
+      <input id="add-expense-submit-button" type="submit" value="Add">
+    </form>
+    <!-- <button id="delete-expense-button">X Delete Expense</button> -->
+    <div class="align-right-div">
+      <div id="delete-expense-button">X Delete Expense</div>
+    </div>
+  </div>
 {% endblock %}
