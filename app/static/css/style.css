@@ -226,14 +226,13 @@ form {
 .today-expense-table {
   border-collapse: collapse;
   width: 100%;
-  margin: 0;
+  /* margin: 0; */
 }
 
 .today-expense-table th {
   text-align: center;
-  /* padding-bottom: 10px; */
-  /* border: solid black 1px; */
 }
+
 
 .space-row {
   height: 20px;
@@ -243,28 +242,49 @@ form {
   border-bottom: 1px solid #cccccc;
 }
 
+.today-expense-table tr:first-child {
+  border-bottom: hidden;
+}
+
 .today-expense-table td {
   padding-top: 6px;
   padding-bottom: 6px;
 }
 
-/* the item name table heading */
-.today-expense-table th:first-child {
-  width: 55%;
-  background-color: #e6f3ff;
-  /* border: solid blue 1px; */
+
+
+
+/* .today-expense-table col:nth-child(1) {
+  width: 10%;
 }
 
-.today-expense-table th:nth-child(2) {
+.today-expense-table col:nth-child(2) {
   width: 40%;
-  background-color: #cce6ff;
 }
 
+.today-expense-table col:nth-child(3) {
+  width: 40%;
+}
 
-.today-expense-table th:last-child {
-  /* width: 5%; */
-  /* background-color: #cce6ff; */
-  /* border: solid black 1px; */
+.today-expense-table col:nth-child(4) {
+  width: 10%;
+} */
+
+/* the item name table heading */
+.today-expense-table th:nth-child(1) {
+  background-color: #e6f3ff;
+  width: 50%;
+}
+
+/* cost table heading */
+.today-expense-table th:nth-child(2) {
+  background-color: #cce6ff;
+  width: 45%;
+}
+
+.edit-today-expense {
+  border: 1px black solid;
+  border-radius: 5px;
 }
 
 .today-expense-container p {
@@ -272,9 +292,6 @@ form {
   text-align: center;
 }
 
-.delete-expense {
-  border: 1px solid black;
-}
 
 /**/
 
@@ -291,7 +308,7 @@ form {
   margin: 0;
 }
 
-.budget-table th, td {
+.budget-table th, .budget-table td {
   width: 25%;
   text-align: center;
 }

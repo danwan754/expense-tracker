@@ -8,7 +8,7 @@ from . import home
 from ..models import Expense, Budget
 from forms import ExpenseForm, BudgetForm
 from .. import db
-from ..app_processes import getAllBudgetsRemaining, getYearToDateSavings
+from ..app_processes import getAllBudgetsRemaining, getYearToDateSavings, getDateExpenses
 
 from datetime import datetime, date, timedelta
 
@@ -29,7 +29,11 @@ def dashboard():
 
     # get today's expenses
     todayDate = date.today()
-    today_expenses = Expense.query.filter(Expense.date==todayDate, Expense.user_id==current_user.id).order_by(Expense.id.desc()).all()
+    today_expenses = getDateExpenses(todayDate, current_user.id)
+
+    print("$$$$$$$$$$$$$$$$$$$$")
+    for expense in today_expenses:
+        print(expense.category)
 
     # get budget
     budget = Budget.query.filter_by(user_id=current_user.id).first()

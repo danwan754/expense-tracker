@@ -12,7 +12,7 @@ class ExpenseForm(FlaskForm):
     """
     item = StringField('Item', validators=[DataRequired("Item is required.")])
     cost = DecimalField('Cost', validators=[DataRequired("Cost is required.")])
-    category = SelectField('Category', choices=[("1", "Food"), ("2", "Entertainment"), ("3", "Health"), ("4", "Debt"), ("5", "Gift"), ("6", "Education"), ("7", "Travel"), ("8", "Other")])
+    category = SelectField('Category', choices=[("Food", "Food"), ("Entertainment", "Entertainment"), ("Health", "Health"), ("Debt", "Debt"), ("Gift", "Gift"), ("Education", "Education"), ("Travel", "Travel"), ("Other", "Other")])
     date = DateField('Date', validators=[DataRequired("Date is required.")])
     submit = SubmitField('Add')
 

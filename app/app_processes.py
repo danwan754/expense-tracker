@@ -331,6 +331,21 @@ def getDateRangeSavings(date1, date2, budget, id):
     return savings
 
 
+def getDateExpenses(date, id):
+    """
+    Params:
+        date: A Date object.
+        id: user ID.
+    Returns list of expenses for given date.
+    """
+
+    expenses = Expense.query.filter(Expense.date==date, Expense.user_id==id).order_by(Expense.id.desc()).all()
+
+    return expenses
+
+
+
+
 def roundCost(cost):
     """
     Return the cost rounded to 2 decimal places

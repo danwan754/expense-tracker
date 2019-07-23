@@ -110,6 +110,9 @@ class Expense(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def to_dict(self):
+        """
+        Return expense object as a dictionary
+        """
         data = {
             'id': self.id,
             'item': self.item,
@@ -119,9 +122,21 @@ class Expense(db.Model):
         }
         return data
 
-    def __repr__(self):
-        return '<Expense: {}>'.format(self.item)
 
+    def to_collection(self, expenseList):
+        """
+        Return list of expense objects as list of dictionaries
+        """
+
+        expenseCol = [];
+        for expense in expenseList:
+            expenseCol.append(expense.to_dict())
+
+        return expenseCol
+
+
+    def __repr__(self):
+        return '<Expense id: {}, item: {}>'.format(self.id, self.item)
 
 # class Category(db.Model):
 #     """
