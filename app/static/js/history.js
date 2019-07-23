@@ -2,6 +2,7 @@
 
 var toggleDateRange = document.getElementById("toggle-range");
 var toggleSingleDate = document.getElementById("toggle-single");
+var toggleExpenseSavingModeBtns = document.getElementsByClassName("mode-button");
 
 // default toggle is single date selection mode
 toggleSingleDate.style.backgroundColor = "#99cfff";
@@ -11,6 +12,9 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
 var todayDate = new Date();
+
+// index of the currently active mode (savings, expenses, dual); default savings at index 0
+var currentActiveMode = 0;
 
 
 function updateMonthSavingsDisplay(heading, value) {
@@ -163,3 +167,18 @@ toggleSingleDate.addEventListener("click", function() {
   toggleSingleDate.style.backgroundColor = "#99cfff";
   calendar.config.mode = "single";
 });
+
+// add listeners to detect what mode is active
+for (var i=0; i<toggleExpenseSavingModeBtns.length; i++) {
+  toggleExpenseSavingModeBtns[i].addEventListener("click", function() {
+    setModeActive(this);
+  });
+}
+
+// chnage the background colors of active mode button (element) and the other 2 modes
+function setModeActive(element) {
+  for (var i=0; i<toggleExpenseSavingModeBtns.length; i++) {
+    toggleExpenseSavingModeBtns[i].style.backgroundColor = "#99d6ff";
+  }
+  element.style.backgroundColor = "#008ae6";
+}

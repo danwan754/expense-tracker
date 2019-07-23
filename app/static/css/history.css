@@ -23,6 +23,28 @@
   border-radius: 25px;
 }
 
+.btn-group {
+  width: 70%;
+  margin: auto;
+  /* border: 1px solid black; */
+  margin-bottom: 50px;
+}
+
+.mode-button {
+  display: inline-block;
+  border-radius: 5px;
+  font-size: 20px;
+  width: 33%;
+  background-color: #99d6ff;
+}
+
+.mode-button:hover {
+  background-color: #66c2ff;
+}
+
+.mode-button:active {
+  background-color: #008ae6;
+}
 
 .toggle-button {
   /* width: 20%; */

@@ -48,8 +48,6 @@ def update_expense():
     Update a current expense
     """
 
-    print("#####")
-    print(request.form)
     form = ExpenseForm(request.form)
     if form.validate():
 
