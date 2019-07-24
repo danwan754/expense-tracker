@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from . import history
 from ..models import Expense, Budget
 from .. import db
-from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings, getDateTotalExpense
+from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings, getDateTotalExpense, getMonthTotalExpenses, getYearTotalExpenses
 from datetime import datetime, date
 from calendar import month_name
 
@@ -122,7 +122,7 @@ def dateRangeSavings():
 @login_required
 def dayExpenses():
     """
-    Get expenses for date
+    Get total expenses for date
     """
 
     year = int(request.args['year'])
@@ -134,4 +134,36 @@ def dayExpenses():
 
     resp = jsonify(status_code=200,
                     savings = day_expenses)
+    return resp
+
+
+@history.route('/month-expenses', methods=['GET'])
+@login_required
+def monthExpenses():
+    """
+    Get the total expenses for month
+    """
+
+    month = int(request.args['month'])
+    year = int(request.args['year'])
+
+    month_expenses = getMonthTotalExpenses(month, year, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    savings = month_expenses)
+    return resp
+
+
+@history.route('/year-expenses', methods=['GET'])
+@login_required
+def yearExpenses():
+    """
+    Get the total expenses for year
+    """
+
+    year = int(request.args['year'])
+    year_expenses = getYearTotalExpenses(year, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    savings = year_expenses)
     return resp

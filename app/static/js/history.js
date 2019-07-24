@@ -24,18 +24,20 @@ var currentMode = mode.SAVINGS;
 
 
 function updateMonthSavingsDisplay(heading, value) {
-  // document.getElementById("month-summary-div").style.visibility = "visible";
   document.getElementById("month-savings-header").innerHTML = heading;
   document.getElementById("month-savings-value").innerHTML = value;
 }
 
 
 function updateDateSavingsDisplay(heading, value) {
-  // document.getElementById("date-summary-div").style.visibility = "visible";
   document.getElementById("date-savings-header").innerHTML = heading;
   document.getElementById("date-savings-value").innerHTML = value;
 }
 
+function updateYearSavingsDisplay(heading, value) {
+  document.getElementById("year-savings").innerHTML = heading;
+  document.getElementById("year-savings-value").innerHTML = value;
+}
 
 // // fetch and display savings for date
 // function getDateSavingsAndUpdateDisplay(year, month, day) {
@@ -54,7 +56,7 @@ function updateDateSavingsDisplay(heading, value) {
 // }
 
 // fetch data for savings or expenses depending on endpoint provided
-function fetchModeData(year, month, day, endpoint) {
+function fetchDateData(year, month, day, endpoint) {
 
   return axios.get(endpoint, {
     params: {
@@ -70,7 +72,7 @@ function fetchModeData(year, month, day, endpoint) {
   });
 }
 
-// wrapper to fetch and display the selected mode data; modes: "Expenses", "Savings", "Dual"
+// wrapper to fetch and display the selected mode data for given date
 async function getModeDateDataAndDisplay(year, month, day) {
 
   var endpoint = '';
@@ -81,7 +83,7 @@ async function getModeDateDataAndDisplay(year, month, day) {
     endpoint = '/day-expenses';
   }
 
-  var headAndValue = await fetchModeData(year, month, day, endpoint);
+  var headAndValue = await fetchDateData(year, month, day, endpoint);
   console.log(headAndValue);
   updateDateSavingsDisplay(headAndValue[0], headAndValue[1]);
 
@@ -108,26 +110,55 @@ function getDateRangeSavingsAndUpdateDisplay(year1, year2, month1, month2, day1,
 }
 
 
-// fetch and display month savings
-function getMonthSavingsAndUpdateDisplay(month, year) {
-  axios.get('/month-savings', {
+function fetchMonthData(month, year, endpoint) {
+  return axios.get(endpoint, {
     params: {
       month: month,
-      year: year,
+      year: year
     }
   })
   .then(function(response) {
     var heading = monthArr[month - 1] + " " + year;
     var value = response.data.savings.toLocaleString();
-    updateMonthSavingsDisplay(heading, value);
+    return [heading, value];
   });
 }
 
-// fetch and display year savings
-function getYearSavingsAndUpdateDisplay(year) {
-  axios.get('/year-savings', {
+
+// wrapper to fetch and display the selected mode data for given month and year
+async function getModeMonthDataAndDisplay(month, year) {
+
+  var endpoint = '';
+  if (currentMode == mode.SAVINGS) {
+    endpoint = '/month-savings';
+  }
+  else if (currentMode == mode.EXPENSES) {
+    endpoint = '/month-expenses';
+  }
+  var headingAndValue = await fetchMonthData(month, year, endpoint);
+  updateMonthSavingsDisplay(headingAndValue[0], headingAndValue[1]);
+}
+
+
+// wrapper to fetch and display the selected mode data for given year
+async function getModeYearDataAndDisplay(year) {
+
+  var endpoint = '';
+  if (currentMode == mode.SAVINGS) {
+    endpoint = '/year-savings';
+  }
+  else if (currentMode == mode.EXPENSES) {
+    endpoint = '/year-expenses';
+  }
+  var headingAndValue = await fetchYearData(year, endpoint);
+  updateYearSavingsDisplay(headingAndValue[0], headingAndValue[1]);
+}
+
+
+function fetchYearData(year, endpoint) {
+  return axios.get(endpoint, {
     params: {
-      year: year,
+      year: year
     }
   })
   .then(function(response) {
@@ -137,10 +168,11 @@ function getYearSavingsAndUpdateDisplay(year) {
     if (thisYear == year) {
       heading = year + " Year-To-Date";
     }
-    document.getElementById("year-savings").innerHTML = heading;
-    document.getElementById("year-savings-value").innerHTML = response.data.savings.toLocaleString();
+    var value = response.data.savings.toLocaleString();
+    return [heading, value];
   });
 }
+
 
 
 // change the background colors of active mode button (element) and the other 2 modes
@@ -173,10 +205,19 @@ function updateModeDisplay(element, calendar) {
 function displayExpenseMode(calendar) {
 
   document.getElementById("summary-header").innerHTML = "Expenses";
-  // calendar.config.onMonthChange;
-  // calendar.config.onYearChange;
+  calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
 }
+
+// set display to savings mode
+function displaySavingsMode(calendar) {
+  document.getElementById("summary-header").innerHTML = "Savings";
+  calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+}
+
 
 calendarOptions = {
   minDate: minDate, // minDate declared in history.html
@@ -191,19 +232,18 @@ calendarOptions = {
   onMonthChange: function(selectedDates, dateStr, instance) {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
-    getMonthSavingsAndUpdateDisplay(selectedMonth, selectedYear);
+    getModeMonthDataAndDisplay(selectedMonth, selectedYear);
   },
 
   onYearChange: function(selectedDates, dateStr, instance) {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
-    getYearSavingsAndUpdateDisplay(selectedYear);
-    getMonthSavingsAndUpdateDisplay(selectedMonth, selectedYear);
+    getModeYearDataAndDisplay(selectedYear);
+    getModeMonthDataAndDisplay(selectedMonth, selectedYear);
   },
 
   onChange: function(selectedDates, dateStr, instance) {
 
-    console.log("onchange");
     // wait for two selected dates if calendar is in range mode
     if (instance.config.mode == "range") {
       if (selectedDates.length < 2) {

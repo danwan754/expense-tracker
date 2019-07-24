@@ -346,10 +346,33 @@ def getDateExpenses(date, id):
 
 def getDateTotalExpense(date, id):
 
-    expenses = Expense.query.with_entities(func.sum(Expense.cost)).filter(Expense.date==date, Expense.user_id==id).order_by(Expense.id.desc()).scalar()
+    expenses = Expense.query.with_entities(func.sum(Expense.cost)).filter(Expense.date==date, Expense.user_id==id).scalar()
 
     return roundCost(expenses)
 
+
+def getMonthTotalExpenses(month, year, id):
+
+    numDaysInMonth = monthrange(year, month)[1]
+    firstDate = date(year, month, 1)
+    lastDate = date(year, month, numDaysInMonth)
+
+    expenses = Expense.query.with_entities(func.sum(Expense.cost)).filter(Expense.date>=firstDate, Expense.date<=lastDate, Expense.user_id==id).scalar()
+
+    return roundCost(expenses)
+
+
+def getYearTotalExpenses(year, id):
+
+    # January 1 of selected year
+    firstDayOfYear = date(year, 1, 1)
+
+    # December 31 of selected year
+    lastDayOfYear = date(year, 12, 31)
+
+    expenses = Expense.query.with_entities(func.sum(Expense.cost)).filter(Expense.date>=firstDayOfYear, Expense.date<=lastDayOfYear, Expense.user_id==id).scalar()
+
+    return roundCost(expenses)
 
 
 ######################### Helper functions ############################
