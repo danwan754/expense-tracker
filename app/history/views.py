@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from . import history
 from ..models import Expense, Budget
 from .. import db
-from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings
+from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings, getDateTotalExpense
 from datetime import datetime, date
 from calendar import month_name
 
@@ -115,4 +115,23 @@ def dateRangeSavings():
 
     resp = jsonify(status_code=200,
                     savings = day_savings)
+    return resp
+
+
+@history.route('/day-expenses', methods=['GET'])
+@login_required
+def dayExpenses():
+    """
+    Get expenses for date
+    """
+
+    year = int(request.args['year'])
+    month = int(request.args['month'])
+    day = int(request.args['day'])
+    selectedDate = date(year, month, day)
+
+    day_expenses = getDateTotalExpense(selectedDate, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    savings = day_expenses)
     return resp

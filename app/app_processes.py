@@ -344,11 +344,22 @@ def getDateExpenses(date, id):
     return expenses
 
 
+def getDateTotalExpense(date, id):
 
+    expenses = Expense.query.with_entities(func.sum(Expense.cost)).filter(Expense.date==date, Expense.user_id==id).order_by(Expense.id.desc()).scalar()
+
+    return roundCost(expenses)
+
+
+
+######################### Helper functions ############################
 
 def roundCost(cost):
     """
     Return the cost rounded to 2 decimal places
     """
 
-    return round(cost * 100) / 100
+    if cost:
+        return round(cost * 100) / 100
+    else:
+        return 0

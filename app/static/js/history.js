@@ -13,8 +13,14 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 
 var todayDate = new Date();
 
-// index of the currently active mode (savings, expenses, dual); default savings at index 0
-var currentActiveMode = 0;
+
+const mode = {
+  SAVINGS: "Savings",
+  EXPENSES: "Expenses",
+  DUAL: "Dual"
+}
+
+var currentMode = mode.SAVINGS;
 
 
 function updateMonthSavingsDisplay(heading, value) {
@@ -31,9 +37,26 @@ function updateDateSavingsDisplay(heading, value) {
 }
 
 
-// fetch and display savings for date
-function getDateSavingsAndUpdateDisplay(year, month, day) {
-  axios.get('/day-savings', {
+// // fetch and display savings for date
+// function getDateSavingsAndUpdateDisplay(year, month, day) {
+//   axios.get('/day-savings', {
+//     params: {
+//       year: year,
+//       month: month + 1,
+//       day: day,
+//     }
+//   })
+//   .then(function(response) {
+//     var heading = monthArr[month] + " " + day + ", " + year;
+//     var value = response.data.savings.toLocaleString();
+//     updateDateSavingsDisplay(heading, value);
+//   });
+// }
+
+// fetch data for savings or expenses depending on endpoint provided
+function fetchModeData(year, month, day, endpoint) {
+
+  return axios.get(endpoint, {
     params: {
       year: year,
       month: month + 1,
@@ -43,9 +66,27 @@ function getDateSavingsAndUpdateDisplay(year, month, day) {
   .then(function(response) {
     var heading = monthArr[month] + " " + day + ", " + year;
     var value = response.data.savings.toLocaleString();
-    updateDateSavingsDisplay(heading, value);
+    return [heading, value];
   });
 }
+
+// wrapper to fetch and display the selected mode data; modes: "Expenses", "Savings", "Dual"
+async function getModeDateDataAndDisplay(year, month, day) {
+
+  var endpoint = '';
+  if (currentMode == mode.SAVINGS) {
+    endpoint = '/day-savings';
+  }
+  else if (currentMode == mode.EXPENSES) {
+    endpoint = '/day-expenses';
+  }
+
+  var headAndValue = await fetchModeData(year, month, day, endpoint);
+  console.log(headAndValue);
+  updateDateSavingsDisplay(headAndValue[0], headAndValue[1]);
+
+}
+
 
 // fetch and display savings for date range
 function getDateRangeSavingsAndUpdateDisplay(year1, year2, month1, month2, day1, day2) {
@@ -101,6 +142,42 @@ function getYearSavingsAndUpdateDisplay(year) {
   });
 }
 
+
+// change the background colors of active mode button (element) and the other 2 modes
+function setModeActive(element) {
+  for (var i=0; i<toggleExpenseSavingModeBtns.length; i++) {
+    toggleExpenseSavingModeBtns[i].style.backgroundColor = "#99d6ff";
+  }
+  element.style.backgroundColor = "#008ae6";
+}
+
+// change the display to data for active mode
+function updateModeDisplay(element, calendar) {
+  currentMode = element.innerHTML;
+
+  switch (currentMode) {
+    case mode.EXPENSES:
+      displayExpenseMode(calendar);
+      break;
+
+    case mode.DUAL:
+      displayDualMode(calendar);
+      break;
+
+    default:
+      displaySavingsMode(calendar);
+  }
+}
+
+// set display to expense mode
+function displayExpenseMode(calendar) {
+
+  document.getElementById("summary-header").innerHTML = "Expenses";
+  // calendar.config.onMonthChange;
+  // calendar.config.onYearChange;
+  calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+}
+
 calendarOptions = {
   minDate: minDate, // minDate declared in history.html
   maxDate: todayDate,
@@ -126,6 +203,7 @@ calendarOptions = {
 
   onChange: function(selectedDates, dateStr, instance) {
 
+    console.log("onchange");
     // wait for two selected dates if calendar is in range mode
     if (instance.config.mode == "range") {
       if (selectedDates.length < 2) {
@@ -141,7 +219,7 @@ calendarOptions = {
     day = selectedDates[0].getDate();
 
     if (instance.config.mode == "single") {
-      getDateSavingsAndUpdateDisplay(year, month, day);
+      getModeDateDataAndDisplay(year, month, day);
     }
     else {
       getDateRangeSavingsAndUpdateDisplay(year, year2, month, month2, day, day2);
@@ -172,13 +250,6 @@ toggleSingleDate.addEventListener("click", function() {
 for (var i=0; i<toggleExpenseSavingModeBtns.length; i++) {
   toggleExpenseSavingModeBtns[i].addEventListener("click", function() {
     setModeActive(this);
+    updateModeDisplay(this, calendar);
   });
-}
-
-// chnage the background colors of active mode button (element) and the other 2 modes
-function setModeActive(element) {
-  for (var i=0; i<toggleExpenseSavingModeBtns.length; i++) {
-    toggleExpenseSavingModeBtns[i].style.backgroundColor = "#99d6ff";
-  }
-  element.style.backgroundColor = "#008ae6";
 }
