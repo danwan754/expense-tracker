@@ -375,6 +375,17 @@ def getYearTotalExpenses(year, id):
     return roundCost(expenses)
 
 
+def getDateRangeTotalExpenses(date1, date2, id):
+
+    timeDiff = date2 - date1
+    numDays = timeDiff.days + 1
+
+    expenses = Expense.query.with_entities(func.sum(Expense.cost)).filter(Expense.user_id==id, Expense.date>=date1, Expense.date<=date2).scalar()
+
+    return roundCost(expenses)
+
+
+
 ######################### Helper functions ############################
 
 def roundCost(cost):

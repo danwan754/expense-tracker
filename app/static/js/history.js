@@ -84,15 +84,14 @@ async function getModeDateDataAndDisplay(year, month, day) {
   }
 
   var headAndValue = await fetchDateData(year, month, day, endpoint);
-  console.log(headAndValue);
   updateDateSavingsDisplay(headAndValue[0], headAndValue[1]);
 
 }
 
 
 // fetch and display savings for date range
-function getDateRangeSavingsAndUpdateDisplay(year1, year2, month1, month2, day1, day2) {
-  axios.get('/date-range-savings', {
+function fetchDateRangeData(year1, year2, month1, month2, day1, day2, endpoint) {
+  return axios.get(endpoint, {
     params: {
       year1: year1,
       year2: year2,
@@ -105,8 +104,22 @@ function getDateRangeSavingsAndUpdateDisplay(year1, year2, month1, month2, day1,
   .then(function(response) {
     var heading = monthArr[month1] + " " + day1 + ", " + year1 + "  -  " + monthArr[month2] + " " + day2 + ", " + year2;
     var value = response.data.savings.toLocaleString();
-    updateDateSavingsDisplay(heading, value);
+    return [heading, value];
   });
+}
+
+// wrapper to fetch and display the selected mode data for given date range
+async function getModeDateRnageDataAndDisplay(year1, year2, month1, month2, day1, day2) {
+  var endpoint = '';
+  if (currentMode == mode.SAVINGS) {
+    endpoint = '/date-range-savings';
+  }
+  else if (currentMode == mode.EXPENSES) {
+    endpoint = '/date-range-expenses';
+  }
+
+  var headAndValue = await fetchDateRangeData(year1, year2, month1, month2, day1, day2, endpoint);
+  updateDateSavingsDisplay(headAndValue[0], headAndValue[1]);
 }
 
 
@@ -262,7 +275,7 @@ calendarOptions = {
       getModeDateDataAndDisplay(year, month, day);
     }
     else {
-      getDateRangeSavingsAndUpdateDisplay(year, year2, month, month2, day, day2);
+      getModeDateRnageDataAndDisplay(year, year2, month, month2, day, day2);
     }
   },
 
