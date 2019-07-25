@@ -2,6 +2,7 @@
 
 .history-main-container {
   margin: 50px;
+  text-align: center;
 }
 
 #history-left-side-container {
@@ -21,6 +22,15 @@
   vertical-align: top;
   border: 1px #66b5ff solid;
   border-radius: 25px;
+}
+
+#history-bottom-expense-container {
+  margin: 50px auto;
+  border: 1px #66b5ff solid;
+  border-radius: 25px;
+  width: 50%;
+  padding: 10px;
+  display: none;
 }
 
 .btn-group {

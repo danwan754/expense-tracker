@@ -17,7 +17,7 @@ var todayDate = new Date();
 const mode = {
   SAVINGS: "Savings",
   EXPENSES: "Expenses",
-  DUAL: "Dual"
+  ANALYTICS: "Analytics"
 }
 
 var currentMode = mode.SAVINGS;
@@ -205,8 +205,8 @@ function updateModeDisplay(element, calendar) {
       displayExpenseMode(calendar);
       break;
 
-    case mode.DUAL:
-      displayDualMode(calendar);
+    case mode.ANALYTICS:
+      displayAnalyticsMode(calendar);
       break;
 
     default:
@@ -221,6 +221,7 @@ function displayExpenseMode(calendar) {
   calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  document.getElementById("history-bottom-expense-container").style.display = "block";
 }
 
 // set display to savings mode
@@ -229,6 +230,15 @@ function displaySavingsMode(calendar) {
   calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  document.getElementById("history-bottom-expense-container").style.display = "none";
+}
+
+// set display to analytics mode
+function displayAnalyticsMode(calendar) {
+
+
+  
+  document.getElementById("history-bottom-expense-container").style.display = "none";
 }
 
 

@@ -18,11 +18,11 @@
       </div>
     </div>
   </div>
-  <div class="dashboard-row">
+  <!-- <div class="dashboard-row">
     <div class="week-expense-wrapper">
       {% include "includes/week_expense.html" %}
     </div>
-  </div>
+  </div> -->
 
   <div class="form-modal" id="add-expense-modal">
     <div class="form-modal-content">
@@ -39,6 +39,9 @@
   </div>
 </div>
 
-<script type=text/javascript src="{{
-  url_for('static', filename='js/dashboard.js') }}"></script>
+
+<script type=text/javascript src="{{ url_for('static', filename='js/add-expense-modal.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='js/budget-display.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
 {% endblock %}

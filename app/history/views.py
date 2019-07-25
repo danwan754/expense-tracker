@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 
 from . import history
 from ..models import Expense, Budget
+from ..home.forms import ExpenseForm
 from .. import db
 from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings, getDateTotalExpense, getMonthTotalExpenses, getYearTotalExpenses, getDateRangeTotalExpenses
 from datetime import datetime, date
@@ -19,6 +20,7 @@ def historyPage():
     """
 
     today = datetime.now().date()
+    expenseForm = ExpenseForm()
     budget = Budget.query.filter(Budget.user_id == current_user.id).first()
     ytd_savings = getYearToDateSavings(budget, current_user.id)
     month_savings = getMonthSavings(today.month, today.year, today, budget, current_user.id)
@@ -36,7 +38,8 @@ def historyPage():
                                                     todayYear=today.year,
                                                     todayMonth=month_name[today.month],
                                                     todayDate=today.strftime("%B %d, %Y"),
-                                                    minDate=minDate)
+                                                    minDate=minDate,
+                                                    expenseForm=expenseForm)
 
 
 @history.route('/month-savings', methods=['GET'])
