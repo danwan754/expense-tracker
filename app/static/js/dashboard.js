@@ -4,7 +4,6 @@
 // listen for deleteExpenseBtn onclick
 document.getElementById("delete-expense-button").addEventListener("click", () => {
   var cost = document.getElementById(currentExpenseID).cells[1].innerHTML;
-  console.log("cost: " + cost);
 
   // delete expense row in today-expense-table
   deleteExpense();
@@ -24,7 +23,7 @@ submitExpenseButton.addEventListener("click", async function(event) {
 
   // create new expense
   if (submitExpenseButton.value == "Add") {
-    var cost = await getDateExpenses('get');
+    var cost = await addDateExpense('post');
     if (typeof cost == "number") {
       subtractFromBudget(cost);
     }
@@ -32,7 +31,7 @@ submitExpenseButton.addEventListener("click", async function(event) {
   // modify existing expense
   else if (submitExpenseButton.value == "Confirm Changes") {
     var oldCost = document.getElementById(currentExpenseID).cells[1].innerHTML;
-    var cost = await getDateExpenses('put');
+    var cost = await addDateExpense('put');
     if (typeof cost == "number") {
       cost = cost - oldCost;
       subtractFromBudget(cost);

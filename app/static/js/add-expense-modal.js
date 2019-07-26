@@ -1,6 +1,7 @@
 // app/static/js/add-expense-modal.js
 
 var addExpenseModal = document.getElementById('add-expense-modal');
+var addExpenseForm = document.getElementById("add-expense-form");
 
 // button that opens the modal
 var addExpenseBtn = document.getElementById("add-expense-button");
@@ -22,7 +23,9 @@ var deleteExpenseBtn = document.getElementById("delete-expense-button");
 var editButtons = document.getElementsByClassName('edit-expense');
 
 var dateComponentsArr = new Date().toLocaleDateString().split('/');
-var todayDate = dateComponentsArr[2] + "-" + dateComponentsArr[1] + "-" + dateComponentsArr[0];
+
+// chosenDate is today by default
+var chosenDate = dateComponentsArr[2] + "-" + dateComponentsArr[1] + "-" + dateComponentsArr[0];
 
 // currently selected expense id
 var currentExpenseID = null;
@@ -32,7 +35,7 @@ function deleteExpense() {
   var row = document.getElementById(currentExpenseID);
 
   // delete expense from server
-  axios.delete('/api/users/expenses', {
+  axios.delete('/api/users/expense', {
     data: {
       id: currentExpenseID
     }
@@ -73,7 +76,7 @@ function openEditModal(id = 0) {
     modalHeader.innerHTML = "Add Expense";
   }
 
-  dateAddExpenseField.value = todayDate;
+  dateAddExpenseField.value = chosenDate;
 }
 
 
@@ -89,36 +92,54 @@ function addListenerToEditExpense(element){
 }
 
 
+// get expenses for provided date
+function getDateExpenses(date) {
+  return axios.get('/api/users/expenses', {
+    params: {
+      date: date
+    }
+  })
+  .then(response => {
+    return response.data;
+  })
+}
+
+
+// add expense to table display
+function appendExpenseToTable(table_element, obj) {
+  console.log("table_element : " + table_element);
+  console.log("obj : " + obj);
+  var newRow = table_element.insertRow(2);
+  newRow.id = obj.id;
+  newRow.setAttribute("data-category", obj.category);
+  var newCell = newRow.insertCell(0);
+  newCell.innerHTML = obj.item;
+  newCell = newRow.insertCell(1);
+  newCell.innerHTML = obj.cost;
+  newCell = newRow.insertCell(2);
+  var newEditButton = createEditButton();
+  newCell.appendChild(newEditButton);
+
+  addExpenseModal.style.display = "none";
+  addExpenseError.style.display = "none";
+}
 
 // post new expense for today and display on today's expense table
-function getDateExpenses(method) {
+function addDateExpense(method) {
 
   // post new expense
   var data = new FormData(addExpenseForm);
 
 
   // create new expense
-  if (method == 'get') {
+  if (method == 'post') {
     return axios.post('/api/users/expenses', data)
       .then(function(response) {
 
         // display posted expense to today's expense table
         if (response.status == 201) {
           var expenseTable = document.getElementById("today-expense-table");
-          var newRow = expenseTable.insertRow(2);
-          newRow.id = response.data.id;
-          newRow.setAttribute("data-category", response.data.category);
-          var newCell = newRow.insertCell(0);
-          newCell.innerHTML = response.data.item;
-          newCell = newRow.insertCell(1);
-          newCell.innerHTML = response.data.cost;
-          newCell = newRow.insertCell(2);
-          var newEditButton = createEditButton();
-          newCell.appendChild(newEditButton);
-
-          addExpenseModal.style.display = "none";
-          addExpenseError.style.display = "none";
-
+          appendExpenseToTable(expenseTable, response.data);
           return response.data.cost;
         }
         else {
@@ -180,18 +201,19 @@ function getDateExpenses(method) {
 // // serves as a proxy target object to signal an expense is deleted and to update the budget display
 // var deleteExpenseTrigger = {};
 
-// onclick listeners to open the modals
+// onclick listener to open the modal
 addExpenseBtn.onclick = function() {
   submitExpenseButton.value = "Add";
   modalHeader.innerHTML = "Add Expense";
   addExpenseForm.reset();
   categoryExpenseField.value = null;
   addExpenseModal.style.display = "block";
-  dateAddExpenseField.value = todayDate;
+  console.log(chosenDate);
+  dateAddExpenseField.value = chosenDate;
   deleteExpenseBtn.style.display = "none";
 }
 
-// onclick listeners to close the modals
+// onclick listener to close the modal
 closeAddExpense.onclick = function() {
   addExpenseError.style.display = "none";
   addExpenseModal.style.display = "none";

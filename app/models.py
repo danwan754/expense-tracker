@@ -122,8 +122,8 @@ class Expense(db.Model):
         }
         return data
 
-
-    def to_collection(self, expenseList):
+    @staticmethod
+    def to_collection(expenseList):
         """
         Return list of expense objects as list of dictionaries
         """

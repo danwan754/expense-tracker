@@ -21,6 +21,8 @@ def create_expense():
     """
 
     form = ExpenseForm(request.form)
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(form.date.data)
     if form.validate_on_submit():
         expense = Expense(item=form.item.data,
                           cost=form.cost.data,
@@ -78,16 +80,19 @@ def update_expense():
 def get_expenses():
     """ get expenses on the provided date"""
 
+    # date = datetime.strptime(request.args['date'], "%Y-%m-%d")
     date = request.args['date']
-
     expenses = getDateExpenses(date, current_user.id)
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(date)
+    print(expenses)
 
-    return jsonify(expenses.to_collection())
+    return jsonify(Expense.to_collection(expenses))
 
 
 
 
-@bp.route('/users/expenses', methods=['GET'])
+@bp.route('/users/expense', methods=['GET'])
 def get_expense():
     """ get an expense"""
 
@@ -95,7 +100,7 @@ def get_expense():
 
 
 
-@bp.route('/users/expenses', methods=['DELETE'])
+@bp.route('/users/expense', methods=['DELETE'])
 def delete_expense():
     """
     Delete expense with the provided item name, cost, and date

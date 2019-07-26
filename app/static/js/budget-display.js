@@ -8,8 +8,6 @@ var editBudgetBtn = document.getElementById("edit-budget-button");
 // <span> element that close the modal
 var closeEditBudget = document.getElementById("close-edit-budget");
 
-var addExpenseForm = document.getElementById("add-expense-form");
-
 // budget input fields
 var dailyBudgetField = document.getElementById("dailyBudgetField");
 var weeklyBudgetField = document.getElementById("weeklyBudgetField");

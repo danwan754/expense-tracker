@@ -12,6 +12,7 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
 var todayDate = new Date();
+var chosenDate = null;
 
 
 const mode = {
@@ -109,7 +110,7 @@ function fetchDateRangeData(year1, year2, month1, month2, day1, day2, endpoint) 
 }
 
 // wrapper to fetch and display the selected mode data for given date range
-async function getModeDateRnageDataAndDisplay(year1, year2, month1, month2, day1, day2) {
+async function getModeDateRangeDataAndDisplay(year1, year2, month1, month2, day1, day2) {
   var endpoint = '';
   if (currentMode == mode.SAVINGS) {
     endpoint = '/date-range-savings';
@@ -187,6 +188,15 @@ function fetchYearData(year, endpoint) {
 }
 
 
+async function getAndDisplayExpensesForDate() {
+  var expenseTable = document.getElementById("today-expense-table");
+  var expenseObjArr = await getDateExpenses(chosenDate);
+  console.log(expenseObjArr);
+  for (var i=0; i<expenseObjArr.length; i++) {
+    appendExpenseToTable(expenseTable, expenseObjArr[i]);
+  }
+}
+
 
 // change the background colors of active mode button (element) and the other 2 modes
 function setModeActive(element) {
@@ -207,10 +217,12 @@ function updateModeDisplay(element, calendar) {
 
     case mode.ANALYTICS:
       displayAnalyticsMode(calendar);
+      chosenDate = null;
       break;
 
     default:
       displaySavingsMode(calendar);
+      chosenDate = null;
   }
 }
 
@@ -221,7 +233,11 @@ function displayExpenseMode(calendar) {
   calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-  document.getElementById("history-bottom-expense-container").style.display = "block";
+
+  if (chosenDate) {
+    document.getElementById("history-bottom-expense-container").style.display = "block";
+    getAndDisplayExpensesForDate();
+  }
 }
 
 // set display to savings mode
@@ -233,13 +249,60 @@ function displaySavingsMode(calendar) {
   document.getElementById("history-bottom-expense-container").style.display = "none";
 }
 
+
 // set display to analytics mode
 function displayAnalyticsMode(calendar) {
 
-
-  
   document.getElementById("history-bottom-expense-container").style.display = "none";
 }
+
+
+// subtract the cost from expense summary display
+function subtractFromExpenseSummary(cost) {
+  if (typeof cost == "number") {
+    // var yearSummary = parseFloat(document.getElementById('year-savings-value').innerHTML)
+    // var monthSummary = parseFloat(document.getElementById('month-savings-value').innerHTML)
+    // var dateSummary = parseFloat(document.getElementById('date-savings-value').innerHTML)
+    document.getElementById("year-savings-value").innerHTML -= yearSummary;
+  }
+}
+
+// listen for click on button to delete expense from table
+document.getElementById("delete-expense-button").addEventListener("click", () => {
+  var cost = document.getElementById(currentExpenseID).cells[1].innerHTML;
+
+  // delete expense row in today-expense-table
+  deleteExpense();
+
+  // add the cost of the removed expense back to the displayed budgets
+  subtractFromExpenseSummary(-1 * cost);
+});
+
+// post new expense for date and display on today's expense table
+submitExpenseButton.addEventListener("click", async function(event) {
+  event.preventDefault();
+
+  // post new expense
+  var data = new FormData(addExpenseForm);
+
+  // create new expense
+  if (submitExpenseButton.value == "Add") {
+    var cost = await addDateExpense('post');
+    if (typeof cost == "number") {
+      subtractFromExpenseSummary(cost);
+    }
+  }
+  // modify existing expense
+  else if (submitExpenseButton.value == "Confirm Changes") {
+    var oldCost = document.getElementById(currentExpenseID).cells[1].innerHTML;
+    var cost = await addDateExpense('put');
+    if (typeof cost == "number") {
+      cost = cost - oldCost;
+      subtractFromExpenseSummary(cost);
+    }
+  }
+});
+
 
 
 calendarOptions = {
@@ -269,6 +332,7 @@ calendarOptions = {
 
     // wait for two selected dates if calendar is in range mode
     if (instance.config.mode == "range") {
+      chosenDate = null;
       if (selectedDates.length < 2) {
         return;
       }
@@ -283,11 +347,14 @@ calendarOptions = {
 
     if (instance.config.mode == "single") {
       getModeDateDataAndDisplay(year, month, day);
+      chosenDate = year.toString() + "-" + (month + 1).toString() + "-" + day.toString();
+      console.log(chosenDate);
+      // getAndDisplayExpensesForDate();
     }
     else {
-      getModeDateRnageDataAndDisplay(year, year2, month, month2, day, day2);
+      getModeDateRangeDataAndDisplay(year, year2, month, month2, day, day2);
     }
-  },
+  }
 
 }
 
