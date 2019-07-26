@@ -1,11 +1,5 @@
 // app/static/js/dashboard.js
 
-// var deleteExpenseTriggerProxy = new Proxy(deleteExpenseTrigger, {
-//   set: function(target, key, value) {
-//     target[key] = value;
-//     return;
-//   }
-// });
 
 // listen for deleteExpenseBtn onclick
 document.getElementById("delete-expense-button").addEventListener("click", () => {
@@ -31,7 +25,7 @@ submitExpenseButton.addEventListener("click", async function(event) {
   // create new expense
   if (submitExpenseButton.value == "Add") {
     var cost = await getDateExpenses('get');
-    if (cost) {
+    if (typeof cost == "number") {
       subtractFromBudget(cost);
     }
   }
@@ -39,7 +33,7 @@ submitExpenseButton.addEventListener("click", async function(event) {
   else if (submitExpenseButton.value == "Confirm Changes") {
     var oldCost = document.getElementById(currentExpenseID).cells[1].innerHTML;
     var cost = await getDateExpenses('put');
-    if (cost) {
+    if (typeof cost == "number") {
       cost = cost - oldCost;
       subtractFromBudget(cost);
     }
