@@ -65,6 +65,9 @@ def update_expense():
         resp.status_code = 200
         resp.headers['Location'] = url_for('api.get_expense', user_id=id, expense_id=expense.id)
     else:
+        print("##############")
+        print(form.item.data)
+        print(form.cost.data)
         resp = jsonify(errors=form.errors)
         resp.status_code = 400
 

@@ -27,28 +27,8 @@ var todayDate = dateComponentsArr[2] + "-" + dateComponentsArr[1] + "-" + dateCo
 // currently selected expense id
 var currentExpenseID = null;
 
-
-// onclick listeners to open the modals
-addExpenseBtn.onclick = function() {
-  submitExpenseButton.value = "Add";
-  modalHeader.innerHTML = "Add Expense";
-  addExpenseForm.reset();
-  categoryExpenseField.value = null;
-  addExpenseModal.style.display = "block";
-  dateAddExpenseField.value = todayDate;
-  deleteExpenseBtn.style.display = "none";
-}
-
-// onclick listeners to close the modals
-closeAddExpense.onclick = function() {
-  addExpenseError.style.display = "none";
-  addExpenseModal.style.display = "none";
-  console.log('close');
-}
-
-// event listener to delete row on today-expense table
-document.getElementById("delete-expense-button").addEventListener('click', function() {
-  // var expenseTable = document.getElementById("today-expense-table")
+// delete row on today-expense table
+function deleteExpense() {
   var row = document.getElementById(currentExpenseID);
 
   // delete expense from server
@@ -65,7 +45,7 @@ document.getElementById("delete-expense-button").addEventListener('click', funct
   .catch(error => {
     console.log(error)
   });
-});
+}
 
 // create a edit button component for expense
 function createEditButton() {
@@ -87,7 +67,6 @@ function openEditModal(id = 0) {
     costAddExpenseField.value = row.cells[1].innerHTML;
     categoryExpenseField.value = row.getAttribute("data-category");
     submitExpenseButton.value = "Confirm Changes";
-    // addExpenseModal.appendChild(deleteButton);
     deleteExpenseBtn.style.display = "block";
   }
   else {
@@ -109,10 +88,7 @@ function addListenerToEditExpense(element){
   });
 }
 
-// add event listener to every edit button in today-expense table
-for (var i=0; i<editButtons.length; i++) {
-  addListenerToEditExpense(editButtons[i]);
-}
+
 
 // post new expense for today and display on today's expense table
 function getDateExpenses(method) {
@@ -198,4 +174,31 @@ function getDateExpenses(method) {
         addExpenseError.style.display = "block";
       });
   }
+}
+
+
+// // serves as a proxy target object to signal an expense is deleted and to update the budget display
+// var deleteExpenseTrigger = {};
+
+// onclick listeners to open the modals
+addExpenseBtn.onclick = function() {
+  submitExpenseButton.value = "Add";
+  modalHeader.innerHTML = "Add Expense";
+  addExpenseForm.reset();
+  categoryExpenseField.value = null;
+  addExpenseModal.style.display = "block";
+  dateAddExpenseField.value = todayDate;
+  deleteExpenseBtn.style.display = "none";
+}
+
+// onclick listeners to close the modals
+closeAddExpense.onclick = function() {
+  addExpenseError.style.display = "none";
+  addExpenseModal.style.display = "none";
+  console.log('close');
+}
+
+// add event listener to every edit button in today-expense table
+for (var i=0; i<editButtons.length; i++) {
+  addListenerToEditExpense(editButtons[i]);
 }
