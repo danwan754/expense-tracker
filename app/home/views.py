@@ -50,31 +50,6 @@ def dashboard():
     return render_template('home/dashboard.html', title="Dashboard", today_expenses=today_expenses, budget=budgetsRemaining, savings=savings, expenseForm=expenseForm, budgetForm=budgetForm)
 
 
-# @home.route('/add-expense', methods=['POST'])
-# @login_required
-# def addExpense():
-#     """
-#     Add an expense for today.
-#     """
-#
-#     form = ExpenseForm(request.form)
-#     if form.validate_on_submit():
-#         expense = Expense(item=form.item.data,
-#                           cost=form.cost.data,
-#                           category=form.category.data,
-#                           date=date.today(),
-#                           user_id=current_user.id)
-#         db.session.add(expense)
-#         db.session.commit()
-#
-#         resp = jsonify(success=True, item=form.item.data, cost=float(form.cost.data))
-#         resp.status_code = 201
-#     else:
-#         resp = jsonify(success=False, errors=form.errors)
-#
-#     return resp
-
-
 @home.route('/edit-budget', methods=['POST'])
 @login_required
 def editBudget():
@@ -92,9 +67,6 @@ def editBudget():
             budget.creation_date = date.today()
 
         budget.daily = form.data["dailyBudgetField"]
-        # budget.weekly = form.data["weeklyBudgetField"]
-        # budget.monthly = form.data["monthlyBudgetField"]
-        # budget.yearly = form.data["yearlyBudgetField"]
         db.session.add(budget)
         db.session.commit()
 
@@ -107,21 +79,4 @@ def editBudget():
         resp = jsonify(sucess=False,
                         errors=form.errors)
 
-    return resp
-
-
-
-
-
-
-@home.route('/test')
-def test():
-    """
-    Just some testing anything to see json response on browser.
-    """
-
-    budget = Budget.query.filter_by(user_id=current_user.id).first()
-    budgetsRemaining = getAllBudgetsRemaining(budget, current_user.id)
-    resp = jsonify(success=True,
-                    budget=budgetsRemaining)
     return resp
