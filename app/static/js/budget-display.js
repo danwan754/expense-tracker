@@ -64,7 +64,7 @@ document.getElementById('edit-budget-submit-button').addEventListener('click', f
   .then(function(response) {
 
     // display the budgets
-    if (response.status_code == 200) {
+    if (response.status == 200) {
       document.getElementById('budget-daily').innerHTML = response.data.budget.today.toFixed(2);
       document.getElementById('budget-weekly').innerHTML = response.data.budget.week.toFixed(2);
       document.getElementById('budget-monthly').innerHTML = response.data.budget.month.toFixed(2);

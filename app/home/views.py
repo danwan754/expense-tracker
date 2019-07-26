@@ -31,10 +31,6 @@ def dashboard():
     todayDate = date.today()
     today_expenses = getDateExpenses(todayDate, current_user.id)
 
-    print("$$$$$$$$$$$$$$$$$$$$")
-    for expense in today_expenses:
-        print(expense.category)
-
     # get budget
     budget = Budget.query.filter_by(user_id=current_user.id).first()
 
