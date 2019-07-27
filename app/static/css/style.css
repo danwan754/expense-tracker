@@ -243,7 +243,7 @@ form {
   border-bottom: 1px solid #cccccc;
 }
 
-#today-expense-table tr:first-child {
+#today-expense-table thead > tr {
   border-bottom: hidden;
 }
 

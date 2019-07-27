@@ -106,10 +106,8 @@ function getDateExpenses(date) {
 
 
 // add expense to table display
-function appendExpenseToTable(table_element, obj) {
-  console.log("table_element : " + table_element);
-  console.log("obj : " + obj);
-  var newRow = table_element.insertRow(2);
+function appendExpenseToTable(tbody, obj) {
+  var newRow = tbody.insertRow(0);
   newRow.id = obj.id;
   newRow.setAttribute("data-category", obj.category);
   var newCell = newRow.insertCell(0);
@@ -138,8 +136,8 @@ function addDateExpense(method) {
 
         // display posted expense to today's expense table
         if (response.status == 201) {
-          var expenseTable = document.getElementById("today-expense-table");
-          appendExpenseToTable(expenseTable, response.data);
+          var expenseTbody = document.getElementById("expense-table-tbody");
+          appendExpenseToTable(expenseTbody, response.data);
           return response.data.cost;
         }
         else {

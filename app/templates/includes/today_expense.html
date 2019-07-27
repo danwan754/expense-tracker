@@ -3,22 +3,26 @@
 <div class="today-expense-container">
   <h3>Today's Expenses</h3>
   <table id="today-expense-table">
-    <tr>
-      <th>Item</th>
-      <th>Cost</th>
-      <th></th>
-    </tr>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Cost</th>
+        <th></th>
+      </tr>
+    </thead>
     <tr class="space-row">
     </tr>
-    {% if today_expenses %}
-      {% for expense in today_expenses %}
-        <tr id='{{ expense.id }}' data-category='{{ expense.category }}'>
-          <td>{{ expense.item }}</td>
-          <td>{{ expense.cost }}</td>
-          <td><div class="edit-expense"><i class="fa fa-edit"></i></div></td>
-        </tr>
-      {% endfor %}
-    {% endif %}
+    <tbody id="expense-table-tbody">
+      {% if today_expenses %}
+        {% for expense in today_expenses %}
+          <tr id='{{ expense.id }}' data-category='{{ expense.category }}'>
+            <td>{{ expense.item }}</td>
+            <td>{{ expense.cost }}</td>
+            <td><div class="edit-expense"><i class="fa fa-edit"></i></div></td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
   </table>
   <div class="right-side-button add-expense-button">
     <div class="round-button" id="add-expense-button"><i class="fa fa-plus" style="font-size:45px;"></i></div>

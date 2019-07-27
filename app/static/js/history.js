@@ -188,12 +188,17 @@ function fetchYearData(year, endpoint) {
 }
 
 
+// fetch expenses for selected date and display on expense table
 async function getAndDisplayExpensesForDate() {
-  var expenseTable = document.getElementById("today-expense-table");
+  var expenseTbody = document.getElementById("expense-table-tbody");
+
+  // clear the table of all expenses
+  expenseTbody.innerHTML = '';
+
   var expenseObjArr = await getDateExpenses(chosenDate);
-  console.log(expenseObjArr);
+
   for (var i=0; i<expenseObjArr.length; i++) {
-    appendExpenseToTable(expenseTable, expenseObjArr[i]);
+    appendExpenseToTable(expenseTbody, expenseObjArr[i]);
   }
 }
 
@@ -230,22 +235,31 @@ function updateModeDisplay(element, calendar) {
 function displayExpenseMode(calendar) {
 
   document.getElementById("summary-header").innerHTML = "Expenses";
+
+  if (!calendar.selectedDates[0]) {
+    calendar.selectedDates[0] = todayDate;
+  }
   calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
 
   if (chosenDate) {
     document.getElementById("history-bottom-expense-container").style.display = "block";
-    getAndDisplayExpensesForDate();
+    // getAndDisplayExpensesForDate();
   }
 }
 
 // set display to savings mode
 function displaySavingsMode(calendar) {
   document.getElementById("summary-header").innerHTML = "Savings";
+
+  if (!calendar.selectedDates[0]) {
+    calendar.selectedDates[0] = todayDate;
+  }
   calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+
   document.getElementById("history-bottom-expense-container").style.display = "none";
 }
 
@@ -348,8 +362,8 @@ calendarOptions = {
     if (instance.config.mode == "single") {
       getModeDateDataAndDisplay(year, month, day);
       chosenDate = year.toString() + "-" + (month + 1).toString() + "-" + day.toString();
-      console.log(chosenDate);
-      // getAndDisplayExpensesForDate();
+      // console.log(chosenDate);
+      getAndDisplayExpensesForDate();
     }
     else {
       getModeDateRangeDataAndDisplay(year, year2, month, month2, day, day2);
@@ -367,6 +381,9 @@ toggleDateRange.addEventListener("click", function() {
   toggleSingleDate.style.backgroundColor = "#FFFFFF";
   calendar.config.mode = "range";
   calendar.clear();
+
+  // do not show the expense table when in range mode
+  document.getElementById("history-bottom-expense-container").style.display = "none";
 });
 
 // highlight the single date selection button if it is active

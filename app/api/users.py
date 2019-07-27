@@ -83,9 +83,6 @@ def get_expenses():
     # date = datetime.strptime(request.args['date'], "%Y-%m-%d")
     date = request.args['date']
     expenses = getDateExpenses(date, current_user.id)
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$")
-    print(date)
-    print(expenses)
 
     return jsonify(Expense.to_collection(expenses))
 
