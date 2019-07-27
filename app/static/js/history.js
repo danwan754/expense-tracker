@@ -274,10 +274,12 @@ function displayAnalyticsMode(calendar) {
 // subtract the cost from expense summary display
 function subtractFromExpenseSummary(cost) {
   if (typeof cost == "number") {
-    // var yearSummary = parseFloat(document.getElementById('year-savings-value').innerHTML)
-    // var monthSummary = parseFloat(document.getElementById('month-savings-value').innerHTML)
-    // var dateSummary = parseFloat(document.getElementById('date-savings-value').innerHTML)
-    document.getElementById("year-savings-value").innerHTML -= yearSummary;
+    var yearSummary = parseFloat(document.getElementById('year-savings-value').innerHTML);
+    var monthSummary = parseFloat(document.getElementById('month-savings-value').innerHTML);
+    var dateSummary = parseFloat(document.getElementById('date-savings-value').innerHTML);
+    document.getElementById("year-savings-value").innerHTML = (yearSummary + cost).toFixed(2);
+    document.getElementById('month-savings-value').innerHTML = (monthSummary + cost).toFixed(2);
+    document.getElementById('date-savings-value').innerHTML = (dateSummary + cost).toFixed(2);
   }
 }
 
