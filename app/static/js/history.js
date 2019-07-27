@@ -4,6 +4,8 @@ var toggleDateRange = document.getElementById("toggle-range");
 var toggleSingleDate = document.getElementById("toggle-single");
 var toggleExpenseSavingModeBtns = document.getElementsByClassName("mode-button");
 
+document.getElementById('expense-table-title').innerHTML = "Expenses";
+
 // default toggle is single date selection mode
 toggleSingleDate.style.backgroundColor = "#99cfff";
 
@@ -190,6 +192,10 @@ function fetchYearData(year, endpoint) {
 
 // fetch expenses for selected date and display on expense table
 async function getAndDisplayExpensesForDate() {
+  if (chosenDate) {
+    document.getElementById("history-bottom-expense-container").style.display = "block";
+    // getAndDisplayExpensesForDate();
+  }
   var expenseTbody = document.getElementById("expense-table-tbody");
 
   // clear the table of all expenses
@@ -242,11 +248,6 @@ function displayExpenseMode(calendar) {
   calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
   calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-
-  if (chosenDate) {
-    document.getElementById("history-bottom-expense-container").style.display = "block";
-    // getAndDisplayExpensesForDate();
-  }
 }
 
 // set display to savings mode
