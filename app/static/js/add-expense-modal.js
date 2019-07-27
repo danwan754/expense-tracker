@@ -206,7 +206,6 @@ addExpenseBtn.onclick = function() {
   addExpenseForm.reset();
   categoryExpenseField.value = null;
   addExpenseModal.style.display = "block";
-  console.log(chosenDate);
   dateAddExpenseField.value = chosenDate;
   deleteExpenseBtn.style.display = "none";
 }
