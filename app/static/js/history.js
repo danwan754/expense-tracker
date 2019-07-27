@@ -6,6 +6,9 @@ var toggleExpenseSavingModeBtns = document.getElementsByClassName("mode-button")
 
 document.getElementById('expense-table-title').innerHTML = "Expenses";
 
+// set the background-color of the Savings button as active
+toggleExpenseSavingModeBtns[0].style.backgroundColor = "#008ae6";
+
 // default toggle is single date selection mode
 toggleSingleDate.style.backgroundColor = "#99cfff";
 
@@ -364,9 +367,10 @@ calendarOptions = {
 
     if (instance.config.mode == "single") {
       getModeDateDataAndDisplay(year, month, day);
-      chosenDate = year.toString() + "-" + (month + 1).toString() + "-" + day.toString();
-      // console.log(chosenDate);
-      getAndDisplayExpensesForDate();
+      if (currentMode == mode.EXPENSES) {
+        chosenDate = year.toString() + "-" + (month + 1).toString() + "-" + day.toString();
+        getAndDisplayExpensesForDate();
+      }
     }
     else {
       getModeDateRangeDataAndDisplay(year, year2, month, month2, day, day2);
