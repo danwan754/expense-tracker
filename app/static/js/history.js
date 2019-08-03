@@ -135,7 +135,6 @@ async function getAndDisplayChartForDate(year, month, day) {
 
   var dataArr = await getChartData(chosenDate);
   date = monthArr[month] + " " + day + ", " + year;
-  console.log(date);
   drawChart(date, dataArr, 'day');
 }
 
