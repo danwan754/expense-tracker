@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script>var minDate = '{{ minDate }}'</script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock %}
 {% block body %}
 
@@ -15,7 +16,7 @@
   <div class="btn-group">
     <button class="mode-button">Savings</button>
     <button class="mode-button">Expenses</button>
-    <button class="mode-button">Dual</button>
+    <button class="mode-button">Expenses Insight</button>
   </div>
 
 
@@ -34,21 +35,34 @@
   </div>
 
   <div id="history-right-side-container">
-    <div class="summary-container">
+    <div id="summary-container">
       <div id="summary-header">Savings</div>
       <div class="summary-sub-container">
-        <p id="year-savings" class="savings-heading">{{ todayYear ~ " Year-to-Date"}}</p>
-        <p id="year-savings-value" class="savings-value">{{ ytdSavings }}</p>
+        <div class="savings-expense-container">
+          <p id="year-savings" class="savings-heading">{{ todayYear ~ " Year-to-Date"}}</p>
+          <div id="year-savings-value" class="savings-value">{{ ytdSavings }}</div>
+        </div>
+        <div id="year-chart" class="chart-value"></div>
       </div>
       <div id="month-summary-div" class="summary-sub-container">
-        <p id="month-savings-header" class="savings-heading">{{ todayMonth ~ " " ~ todayYear }}</p>
-        <p id="month-savings-value" class="savings-value">{{ monthSavings }}</p>
+        <div class="savings-expense-container">
+          <p id="month-savings-header" class="savings-heading">{{ todayMonth ~ " " ~ todayYear }}</p>
+          <div id="month-savings-value" class="savings-value">{{ monthSavings }}</div>
+        </div>
+        <div id="month-chart" class="chart-value"></div>
       </div>
       <div id="date-summary-div" class="summary-sub-container">
-        <p id="date-savings-header" class="savings-heading">{{ todayDate }}</p>
-        <p id="date-savings-value" class="savings-value">{{ todaySavings }}</p>
+        <div class="savings-expense-container">
+          <p id="date-savings-header" class="savings-heading">{{ todayDate }}</p>
+          <div id="date-savings-value" class="savings-value">{{ todaySavings }}</div>
+        </div>
+        <div id="date-chart" class="chart-value"></div>
       </div>
     </div>
+    <!-- <div id="summary-chart-container">
+      <div id="summary-chart-header">null</div>
+      <div id="chart_div"></div>
+    </div> -->
   </div>
 
   <div id="history-bottom-expense-container">

@@ -4,6 +4,9 @@ var toggleDateRange = document.getElementById("toggle-range");
 var toggleSingleDate = document.getElementById("toggle-single");
 var toggleExpenseSavingModeBtns = document.getElementsByClassName("mode-button");
 
+var expenseSummaryContainers = document.getElementsByClassName("savings-expense-container");
+var chartSummaryContainers = document.getElementsByClassName("chart-value");
+
 document.getElementById('expense-table-title').innerHTML = "Expenses";
 
 // set the background-color of the Savings button as active
@@ -17,7 +20,9 @@ monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
 var todayDate = new Date();
-var chosenDate = null;
+var yearChart = null;
+var monthChart = null;
+var dayChart = null;
 
 
 const mode = {
@@ -29,15 +34,78 @@ const mode = {
 var currentMode = mode.SAVINGS;
 
 
+
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(() => {
+  yearChart = new google.visualization.BarChart(document.getElementById('year-chart'));
+  monthChart = new google.visualization.BarChart(document.getElementById('month-chart'));
+  dayChart = new google.visualization.BarChart(document.getElementById('date-chart'));
+});
+
+function drawChart(date, data, period) {
+
+  var initialChart = [['Category', 'Percentage of Total Expense']];
+  chartData = google.visualization.arrayToDataTable(initialChart.concat(data));
+
+  var options = {
+    title: date,
+    chartArea: {
+      left: 100,
+      width: '80%',
+    },
+    hAxis: {
+      title: '% of Expenses',
+      minValue: 0,
+      maxValue: 100
+    },
+    vAxis: {
+      title: 'Category'
+    },
+    legend: {
+      position: 'none'
+    }
+  };
+
+  if (period == 'day') {
+    dayChart.draw(chartData, options);
+  }
+  else if (period == 'month') {
+    monthChart.draw(chartData, options);
+  }
+  else {
+    yearChart.draw(chartData, options);
+  }
+}
+
+// hide either the expense/savings or analytics <div>, and show the other
+function hidePrevMode() {
+  if (currentMode == mode.ANALYTICS) {
+    for (var i=0; i<expenseSummaryContainers.length; i++) {
+      expenseSummaryContainers[i].style.display = 'none';
+    }
+    for (var i=0; i<chartSummaryContainers.length; i++) {
+      chartSummaryContainers[i].style.display = 'block';
+    }
+  }
+  else {
+    for (var i=0; i<expenseSummaryContainers.length; i++) {
+      expenseSummaryContainers[i].style.display = 'block';
+    }
+    for (var i=0; i<chartSummaryContainers.length; i++) {
+      chartSummaryContainers[i].style.display = 'none';
+    }
+  }
+}
+
 function updateMonthSavingsDisplay(heading, value) {
   document.getElementById("month-savings-header").innerHTML = heading;
   document.getElementById("month-savings-value").innerHTML = value;
 }
 
-
 function updateDateSavingsDisplay(heading, value) {
+
   document.getElementById("date-savings-header").innerHTML = heading;
-  document.getElementById("date-savings-value").innerHTML = value;
+  document.getElementById("date-savings-value").innerHTML = value.toLocaleString();
 }
 
 function updateYearSavingsDisplay(heading, value) {
@@ -45,21 +113,31 @@ function updateYearSavingsDisplay(heading, value) {
   document.getElementById("year-savings-value").innerHTML = value;
 }
 
-// // fetch and display savings for date
-// function getDateSavingsAndUpdateDisplay(year, month, day) {
-//   axios.get('/day-savings', {
-//     params: {
-//       year: year,
-//       month: month + 1,
-//       day: day,
-//     }
-//   })
-//   .then(function(response) {
-//     var heading = monthArr[month] + " " + day + ", " + year;
-//     var value = response.data.savings.toLocaleString();
-//     updateDateSavingsDisplay(heading, value);
-//   });
-// }
+
+// fetch chart data
+function getChartData(date) {
+
+  return axios.get('/day-expense-chart', {
+    params: {
+      date: date
+    }
+  })
+  .then((response) => {
+    if (response.status == 200) {
+      var chartData = response.data.chartData;
+      return chartData;
+    }
+  });
+}
+
+// fetch chart data for selected date and display
+async function getAndDisplayChartForDate(year, month, day) {
+
+  var dataArr = await getChartData(chosenDate);
+  date = monthArr[month] + " " + day + ", " + year;
+  console.log(date);
+  drawChart(date, dataArr, 'day');
+}
 
 // fetch data for savings or expenses depending on endpoint provided
 function fetchDateData(year, month, day, endpoint) {
@@ -73,7 +151,7 @@ function fetchDateData(year, month, day, endpoint) {
   })
   .then(function(response) {
     var heading = monthArr[month] + " " + day + ", " + year;
-    var value = response.data.savings.toLocaleString();
+    var value = response.data.savings;
     return [heading, value];
   });
 }
@@ -91,7 +169,6 @@ async function getModeDateDataAndDisplay(year, month, day) {
 
   var headAndValue = await fetchDateData(year, month, day, endpoint);
   updateDateSavingsDisplay(headAndValue[0], headAndValue[1]);
-
 }
 
 
@@ -112,6 +189,24 @@ function fetchDateRangeData(year1, year2, month1, month2, day1, day2, endpoint) 
     var value = response.data.savings.toLocaleString();
     return [heading, value];
   });
+}
+
+
+// fetch and display chart data for date range
+async function getModeDateRangeChartDataAndDisplay(date1, date2) {
+
+  var data = await axios.get('/date-range-chart', {
+    params: {
+      start: date1,
+      end: date2
+    }
+  })
+  .then((response) => {
+    return response.data.chartData;
+  });
+
+  var date = date1 + " to " + date2;
+  drawChart(date, data, 'day');
 }
 
 // wrapper to fetch and display the selected mode data for given date range
@@ -158,6 +253,35 @@ async function getModeMonthDataAndDisplay(month, year) {
   updateMonthSavingsDisplay(headingAndValue[0], headingAndValue[1]);
 }
 
+async function getChartMonthDataAndDisplay(month, year) {
+   var data = await axios.get('/month-chart', {
+     params: {
+       month: month,
+       year: year
+     }
+   })
+   .then((res) => {
+     return res.data.chartData;
+   });
+
+   var date = monthArr[month - 1];
+   drawChart(date, data, 'month');
+}
+
+async function getChartYearDataAndDisplay(year) {
+   var data = await axios.get('/year-chart', {
+     params: {
+       year: year
+     }
+   })
+   .then((res) => {
+     return res.data.chartData;
+   });
+
+   var date = year;
+   drawChart(date, data, 'year');
+}
+
 
 // wrapper to fetch and display the selected mode data for given year
 async function getModeYearDataAndDisplay(year) {
@@ -195,9 +319,8 @@ function fetchYearData(year, endpoint) {
 
 // fetch expenses for selected date and display on expense table
 async function getAndDisplayExpensesForDate() {
-  if (chosenDate) {
+  if (currentMode == mode.EXPENSES && calendar.config.mode == 'single') {
     document.getElementById("history-bottom-expense-container").style.display = "block";
-    // getAndDisplayExpensesForDate();
   }
   var expenseTbody = document.getElementById("expense-table-tbody");
 
@@ -222,54 +345,67 @@ function setModeActive(element) {
 
 // change the display to data for active mode
 function updateModeDisplay(element, calendar) {
-  currentMode = element.innerHTML;
 
-  switch (currentMode) {
+  switch (element.innerHTML) {
     case mode.EXPENSES:
+      currentMode = mode.EXPENSES;
       displayExpenseMode(calendar);
       break;
 
-    case mode.ANALYTICS:
-      displayAnalyticsMode(calendar);
-      chosenDate = null;
+    case mode.SAVINGS:
+      currentMode = mode.SAVINGS;
+      displaySavingsMode(calendar);
       break;
 
     default:
-      displaySavingsMode(calendar);
-      chosenDate = null;
+      currentMode = mode.ANALYTICS;
+      displayAnalyticsMode(calendar);
   }
 }
+
+
+// invoke calendar functions to update data for mode display
+function invokeCalendarUpdate(calendar) {
+  calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+}
+
+// set display to analytics mode
+function displayAnalyticsMode(calendar) {
+
+  document.getElementById("summary-header").innerHTML = 'Total Expenditure in Categories';
+
+  hidePrevMode();
+  document.getElementById("history-bottom-expense-container").style.display = "none";
+
+  invokeCalendarUpdate(calendar);
+}
+
+
 
 // set display to expense mode
 function displayExpenseMode(calendar) {
 
+  hidePrevMode();
   document.getElementById("summary-header").innerHTML = "Expenses";
 
   if (!calendar.selectedDates[0]) {
     calendar.selectedDates[0] = todayDate;
   }
-  calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-  calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-  calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
+  invokeCalendarUpdate(calendar);
 }
 
 // set display to savings mode
 function displaySavingsMode(calendar) {
+
+  hidePrevMode();
   document.getElementById("summary-header").innerHTML = "Savings";
 
   if (!calendar.selectedDates[0]) {
     calendar.selectedDates[0] = todayDate;
   }
-  calendar.config.onMonthChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-  calendar.config.onYearChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-  calendar.config.onChange[0](calendar.selectedDates, calendar.dateStr, calendar);
-
-  document.getElementById("history-bottom-expense-container").style.display = "none";
-}
-
-
-// set display to analytics mode
-function displayAnalyticsMode(calendar) {
+  invokeCalendarUpdate(calendar);
 
   document.getElementById("history-bottom-expense-container").style.display = "none";
 }
@@ -286,6 +422,7 @@ function subtractFromExpenseSummary(cost) {
     document.getElementById('date-savings-value').innerHTML = (dateSummary + cost).toFixed(2);
   }
 }
+
 
 // listen for click on button to delete expense from table
 document.getElementById("delete-expense-button").addEventListener("click", () => {
@@ -338,14 +475,25 @@ calendarOptions = {
   onMonthChange: function(selectedDates, dateStr, instance) {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
-    getModeMonthDataAndDisplay(selectedMonth, selectedYear);
+    if (currentMode == mode.ANALYTICS) {
+      getChartMonthDataAndDisplay(selectedMonth, selectedYear);
+    }
+    else {
+      getModeMonthDataAndDisplay(selectedMonth, selectedYear);
+    }
   },
 
   onYearChange: function(selectedDates, dateStr, instance) {
     selectedMonth = instance.currentMonth + 1;
     selectedYear = instance.currentYear;
-    getModeYearDataAndDisplay(selectedYear);
-    getModeMonthDataAndDisplay(selectedMonth, selectedYear);
+    if (currentMode == mode.ANALYTICS) {
+      getChartYearDataAndDisplay(selectedYear);
+      getChartMonthDataAndDisplay(selectedMonth, selectedYear);
+    }
+    else {
+      getModeYearDataAndDisplay(selectedYear);
+      getModeMonthDataAndDisplay(selectedMonth, selectedYear);
+    }
   },
 
   onChange: function(selectedDates, dateStr, instance) {
@@ -359,18 +507,36 @@ calendarOptions = {
       year2 = selectedDates[1].getFullYear();
       month2 = selectedDates[1].getMonth();
       day2 = selectedDates[1].getDate();
+      var date2 = year2.toString() + "-" + (month2 + 1).toString() + "-" + day2.toString();
     }
 
-    year = selectedDates[0].getFullYear();
-    month = selectedDates[0].getMonth();
-    day = selectedDates[0].getDate();
+    if (selectedDates[0]) {
+      year = selectedDates[0].getFullYear();
+      month = selectedDates[0].getMonth();
+      day = selectedDates[0].getDate();
+    }
+    else {
+      year = todayDate.getFullYear();
+      month = todayDate.getMonth();
+      day = todayDate.getDate();
+    }
+    var date1 = year.toString() + "-" + (month + 1).toString() + "-" + day.toString();
 
     if (instance.config.mode == "single") {
+      chosenDate = date1;
+      if (currentMode == mode.ANALYTICS) {
+        getAndDisplayChartForDate(year, month, day);
+        return;
+      }
+
       getModeDateDataAndDisplay(year, month, day);
+
       if (currentMode == mode.EXPENSES) {
-        chosenDate = year.toString() + "-" + (month + 1).toString() + "-" + day.toString();
         getAndDisplayExpensesForDate();
       }
+    }
+    else if (currentMode == mode.ANALYTICS) {
+      getModeDateRangeChartDataAndDisplay(date1, date2);
     }
     else {
       getModeDateRangeDataAndDisplay(year, year2, month, month2, day, day2);

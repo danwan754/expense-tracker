@@ -7,7 +7,7 @@ from . import history
 from ..models import Expense, Budget
 from ..home.forms import ExpenseForm
 from .. import db
-from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings, getDateTotalExpense, getMonthTotalExpenses, getYearTotalExpenses, getDateRangeTotalExpenses
+from ..app_processes import getYearToDateSavings, getMonthSavings, getYearSavings, getDaySavings, getDateRangeSavings, getDateTotalExpense, getMonthTotalExpenses, getYearTotalExpenses, getDateRangeTotalExpenses, getChartExpenseDataForDate, getChartExpenseDataForDateRange, getChartExpenseDataForMonth, getChartExpenseDataForYear
 from datetime import datetime, date
 from calendar import month_name
 
@@ -22,15 +22,22 @@ def historyPage():
     today = datetime.now().date()
     expenseForm = ExpenseForm()
     budget = Budget.query.filter(Budget.user_id == current_user.id).first()
-    ytd_savings = getYearToDateSavings(budget, current_user.id)
-    month_savings = getMonthSavings(today.month, today.year, today, budget, current_user.id)
-    today_savings = getDaySavings(today, budget, current_user.id)
-    minDate = budget.creation_date
 
-    # add a comma for each thousands
-    ytd_savings = "{:,}".format(ytd_savings)
-    month_savings = "{:,}".format(month_savings)
-    today_savings = "{:,}".format(today_savings)
+    if budget:
+        ytd_savings = getYearToDateSavings(budget, current_user.id)
+        month_savings = getMonthSavings(today.month, today.year, today, budget, current_user.id)
+        today_savings = getDaySavings(today, budget, current_user.id)
+        minDate = budget.creation_date
+
+        # add a comma for each thousands
+        ytd_savings = "{:,}".format(ytd_savings)
+        month_savings = "{:,}".format(month_savings)
+        today_savings = "{:,}".format(today_savings)
+    else:
+        ytd_savings = 0
+        month_savings = 0
+        today_savings = 0
+        minDate = today.strftime("%B %d, %Y")
 
     return render_template('history/history.html', ytdSavings=ytd_savings,
                                                     monthSavings=month_savings,
@@ -54,7 +61,10 @@ def monthSavings():
     year = int(request.args['year'])
     todayDate = datetime.now().date()
 
-    month_savings = getMonthSavings(month, year, todayDate, budget, current_user.id)
+    if budget:
+        month_savings = getMonthSavings(month, year, todayDate, budget, current_user.id)
+    else:
+        month_savings = 0
 
     resp = jsonify(status_code=200,
                     savings = month_savings)
@@ -74,7 +84,11 @@ def daySavings():
     month = int(request.args['month'])
     day = int(request.args['day'])
     selectedDate = date(year, month, day)
-    day_savings = getDaySavings(selectedDate, budget, current_user.id)
+
+    if budget:
+        day_savings = getDaySavings(selectedDate, budget, current_user.id)
+    else:
+        day_savings = 0
 
     resp = jsonify(status_code=200,
                     savings = day_savings)
@@ -90,7 +104,11 @@ def yearSavings():
 
     budget = Budget.query.filter(Budget.user_id == current_user.id).first()
     year = int(request.args['year'])
-    year_savings = getYearSavings(year, budget, current_user.id)
+
+    if budget:
+        year_savings = getYearSavings(year, budget, current_user.id)
+    else:
+        year_savings = 0
 
     resp = jsonify(status_code=200,
                     savings = year_savings)
@@ -114,7 +132,11 @@ def dateRangeSavings():
     selectedDate1 = date(year1, month1, day1)
     selectedDate2 = date(year2, month2, day2)
 
-    day_savings = getDateRangeSavings(selectedDate1, selectedDate2, budget, current_user.id)
+
+    if budget:
+        day_savings = getDateRangeSavings(selectedDate1, selectedDate2, budget, current_user.id)
+    else:
+        day_savings = 0
 
     resp = jsonify(status_code=200,
                     savings = day_savings)
@@ -192,4 +214,72 @@ def dateRangeExpenses():
 
     resp = jsonify(status_code=200,
                     savings = date_range_expenses)
+    return resp
+
+
+@history.route('/day-expense-chart', methods=['GET'])
+@login_required
+def dayExpenseChart():
+    """
+    Get expenditure stats for date
+    """
+
+    date = request.args['date']
+
+    # day_expenses_objs = getDateExpenses(date, current_user.id)
+    chart_data = getChartExpenseDataForDate(date, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    chartData = chart_data)
+    return resp
+
+@history.route('/date-range-chart', methods=['GET'])
+@login_required
+def dateRangeChart():
+    """
+    Get expenditure stats for date range
+    """
+
+    date1 = request.args['start']
+    date2 = request.args['end']
+
+    chart_data = getChartExpenseDataForDateRange(date1, date2, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    chartData = chart_data)
+    return resp
+
+
+@history.route('/month-chart', methods=['GET'])
+@login_required
+def monthExpenseChart():
+    """
+    Get expenditure stats for month
+    """
+
+    month = int(request.args['month'])
+    year = int(request.args['year'])
+
+    # day_expenses_objs = getDateExpenses(date, current_user.id)
+    chart_data = getChartExpenseDataForMonth(month, year, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    chartData = chart_data)
+    return resp
+
+
+@history.route('/year-chart', methods=['GET'])
+@login_required
+def yearExpenseChart():
+    """
+    Get expenditure stats for year
+    """
+
+    year = int(request.args['year'])
+
+    # day_expenses_objs = getDateExpenses(date, current_user.id)
+    chart_data = getChartExpenseDataForYear(year, current_user.id)
+
+    resp = jsonify(status_code=200,
+                    chartData = chart_data)
     return resp

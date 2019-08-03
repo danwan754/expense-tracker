@@ -385,6 +385,107 @@ def getDateRangeTotalExpenses(date1, date2, id):
     return roundCost(expenses)
 
 
+def getChartExpenseDataForDate(date, id):
+    """
+    Returns array of arrays for each category and total percentage of costs for each category; ex.: [['Food', 25], ...] == 25% of expenses were spent on food
+    """
+    expenses = Expense.query.with_entities(Expense.category, Expense.cost).filter(Expense.user_id==id, Expense.date==date).all()
+
+    expenses = sumCategoryData(expenses)
+    expenses = convertToChartData(expenses)
+    return expenses
+
+
+def getChartExpenseDataForDateRange(date1, date2, id):
+    """
+    date1: Start date
+    date2: End date
+    Returns array of arrays for each category and total percentage of costs for each category; ex.: [['Food', 25], ...] == 25% of expenses were spent on food
+    """
+
+    expenses = Expense.query.with_entities(Expense.category, Expense.cost).filter(Expense.user_id==id, Expense.date>=date1, Expense.date<=date2).all()
+
+    expenses = sumCategoryData(expenses)
+    expenses = convertToChartData(expenses)
+    return expenses
+
+
+def getChartExpenseDataForMonth(month, year, id):
+    """
+    Returns array of arrays for each category and total percentage of costs for each category; ex.: [['Food', 25], ...] == 25% of expenses were spent on food
+    """
+    numDaysInMonth = monthrange(year, month)[1]
+    firstDate = date(year, month, 1)
+    lastDate = date(year, month, numDaysInMonth)
+
+    expenses = Expense.query.with_entities(Expense.category, Expense.cost).filter(Expense.date>=firstDate, Expense.date<=lastDate, Expense.user_id==id).all()
+
+    expenses = sumCategoryData(expenses)
+    expenses = convertToChartData(expenses)
+    return expenses
+
+
+def getChartExpenseDataForYear(year, id):
+    """
+    Returns array of arrays for each category and total percentage of costs for each category; ex.: [['Food', 25], ...] == 25% of expenses were spent on food
+    """
+
+    # January 1 of selected year
+    firstDayOfYear = date(year, 1, 1)
+
+    # December 31 of selected year
+    lastDayOfYear = date(year, 12, 31)
+
+    expenses = Expense.query.with_entities(Expense.category, Expense.cost).filter(Expense.date>=firstDayOfYear, Expense.date<=lastDayOfYear, Expense.user_id==id).all()
+
+    expenses = sumCategoryData(expenses)
+    expenses = convertToChartData(expenses)
+    return expenses
+
+
+def sumCategoryData(expenseArrOfTups):
+    """
+    expenseArrOfTups: Array of tuples like (category, cost)
+    Returns a dictionary with entries as category and value as total cost; ex.: {'Food': 500, 'Entertainment': 300, ...}
+    """
+
+    categoryDic = getExpenseCategories()
+
+    for expense in expenseArrOfTups:
+        categoryDic[expense[0]] += expense[1]
+
+    return categoryDic
+
+
+def convertToChartData(categoryDic):
+    """
+    categoryDic: Dictionary like {'Food': 500, 'Entertainment': 300, ...}
+    Returns an array of arrays each have a category and percentage of all expenses like [['Food', 25], ['Entertainment': 15], ...]
+    """
+
+    total = 0
+    for category in categoryDic:
+        total += categoryDic[category]
+
+    chartDataArr = []
+    for category in getExpenseCategoriesOrder():
+        if not total:
+            chartDataArr.append([category, 0])
+        else:
+            chartDataArr.append([category, round((categoryDic[category] / total * 100), 2)])
+
+    return chartDataArr
+
+
+# def getChartData(expensesArr):
+#     """
+#     expenseArr: Array of expense objects
+#     Returns array of arrays for each category and sum of expenses for category
+#     """
+#
+#     sumCategoryData(expenseArr)
+
+
 
 ######################### Helper functions ############################
 
@@ -397,3 +498,37 @@ def roundCost(cost):
         return round(cost * 100) / 100
     else:
         return 0
+
+
+def getExpenseCategories():
+    """
+    Return an dictionary with entries as categories and values set to 0
+    """
+    """
+    Note that any changes to the categories here, will require same changes to be done in app/home/form.py ExpenseForm.category field
+    and getExpenseCategoriesOrder().
+    """
+
+    return {"Food": 0,
+            "Entertainment": 0,
+            "Health": 0,
+            "Debt": 0,
+            "Gift": 0,
+            "Education": 0,
+            "Travel": 0,
+            "Other": 0}
+
+
+def getExpenseCategoriesOrder():
+    """
+    Returns array of Categories
+    """
+
+    return ['Food',
+            "Entertainment",
+            "Health",
+            "Debt",
+            "Gift",
+            "Education",
+            "Travel",
+            "Other"]
