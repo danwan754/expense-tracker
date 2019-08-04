@@ -100,3 +100,25 @@ function subtractFromBudget(cost) {
   document.getElementById('budget-weekly').innerHTML = (weekBudgetRemain - cost).toFixed(2);
   document.getElementById('budget-monthly').innerHTML = (monthBudgetRemain - cost).toFixed(2);
 }
+
+// fetch the savings and display
+function fetchAndDisplaySavings() {
+  axios.get('/year-savings', {
+    params: {
+      year: new Date().getFullYear()
+    }
+  })
+  .then((res) => {
+    document.getElementById('savings-display').innerHTML = res.data.savings;
+  });
+}
+
+// update savings display by subtracting cost of expense
+function subtractFromSavings(cost) {
+  try {
+    var savingsRemain = parseFloat(document.getElementById('savings-display').innerHTML);
+    document.getElementById('savings-display').innerHTML = (savingsRemain - cost).toFixed(2);
+  }
+  catch(err) {
+  }
+}

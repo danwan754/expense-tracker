@@ -60,7 +60,6 @@ def editBudget():
     form = BudgetForm(request.form)
     # if form.validate_on_submit():
     if request.method == 'POST' and form.validate():
-        print("Posted")
         budget = Budget.query.filter_by(user_id=current_user.id).first()
 
         if not budget:
@@ -77,7 +76,6 @@ def editBudget():
         resp = jsonify(success=True,
                        budget=budgetsRemaining)
     else:
-        print("FAILED")
         resp = jsonify(sucess=False,
                         errors=form.errors)
 

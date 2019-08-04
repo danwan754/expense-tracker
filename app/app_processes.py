@@ -187,7 +187,9 @@ def getYearToDateSavings(budget, id):
 
     todayDate = datetime.now().date()
     timeDiff = todayDate - budget.creation_date
-    numDays = timeDiff.days
+
+    # difference in number of days including today
+    numDays = timeDiff.days + 1
 
     # total budget since budget creation date
     totalBudget = budget.daily * numDays
