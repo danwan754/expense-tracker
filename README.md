@@ -1,6 +1,7 @@
 # expense-tracker
 
-(work in progress)
+Demo:
+
 
 This web-app allows the user to create budgets and track all their expenses.
 
@@ -24,7 +25,8 @@ Get insights on what your expenses are going into
 Run these commands to start up the app:
 
 ```
-git clone https://github.com/danwan754/expense-tracker.git
-source setup.sh
-flask run
+git clone https://github.com/danwan754/expense-tracker.git;
+cd expense-tracker;
+source setup.sh;
+flask run;
 ```
