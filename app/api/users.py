@@ -80,9 +80,13 @@ def update_expense():
 def get_expenses():
     """ get expenses on the provided date"""
 
-    # date = datetime.strptime(request.args['date'], "%Y-%m-%d")
-    date = request.args['date']
+    date = datetime.strptime(request.args['date'], "%Y-%m-%d").date()
+    # date = request.args['date']
     expenses = getDateExpenses(date, current_user.id)
+
+    print("#############################")
+    print(date)
+    print(expenses)
 
     return jsonify(Expense.to_collection(expenses))
 
