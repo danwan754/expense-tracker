@@ -224,14 +224,14 @@ def dayExpenseChart():
     Get expenditure stats for date
     """
 
-    date = request.args['date']
+    date = datetime.strptime(request.args['date'], "%Y-%m-%d").date()
 
-    # day_expenses_objs = getDateExpenses(date, current_user.id)
     chart_data = getChartExpenseDataForDate(date, current_user.id)
 
     resp = jsonify(status_code=200,
                     chartData = chart_data)
     return resp
+
 
 @history.route('/date-range-chart', methods=['GET'])
 @login_required
@@ -240,10 +240,9 @@ def dateRangeChart():
     Get expenditure stats for date range
     """
 
-    date1 = request.args['start']
-    date2 = request.args['end']
-
-    chart_data = getChartExpenseDataForDateRange(date1, date2, current_user.id)
+    start = datetime.strptime(request.args['start'], "%Y-%m-%d").date()
+    end = datetime.strptime(request.args['end'], "%Y-%m-%d").date()
+    chart_data = getChartExpenseDataForDateRange(start, end, current_user.id)
 
     resp = jsonify(status_code=200,
                     chartData = chart_data)
