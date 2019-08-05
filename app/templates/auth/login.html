@@ -4,6 +4,7 @@
 {% block title %}Login{% endblock %}
 {% block body %}
 <div class="content-section">
+  <div class="login-container">
   <h2>Login</h2>
 
   {% with messages = get_flashed_messages() %}
@@ -30,5 +31,6 @@
 
     <input type="submit" value="Login">
   </form>
+  </div>
 </div>
 {% endblock %}
