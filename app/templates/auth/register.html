@@ -5,6 +5,9 @@
 {% block body %}
 <div class="content-section">
   <h2>Registration</h2>
+  {% if error %}
+    <div class="error-message">{{ error }}</div>
+  {% endif %}
   <form method="POST">
     {{ form.csrf_token }}
     {{ form.email.label }} </br>

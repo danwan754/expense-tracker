@@ -18,6 +18,7 @@ def register():
     Add an user to the database through the registration form
     """
     form = RegistrationForm()
+    error = form.errors
     if form.validate_on_submit():
         user = User(email=form.email.data,
                     password=form.password.data,
@@ -32,7 +33,7 @@ def register():
         return redirect(url_for('auth.login'))
 
     # load registration template
-    return render_template('auth/register.html', form=form, title='Register')
+    return render_template('auth/register.html', form=form, title='Register', error=error)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -42,7 +43,7 @@ def login():
     Log an user in through the login form
     """
     form = LoginForm()
-    error = None;
+    error = form.errors
     if form.validate_on_submit():
 
         # check whether user exists in the database and whether
