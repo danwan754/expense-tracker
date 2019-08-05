@@ -7,7 +7,7 @@ var toggleExpenseSavingModeBtns = document.getElementsByClassName("mode-button")
 var expenseSummaryContainers = document.getElementsByClassName("savings-expense-container");
 var chartSummaryContainers = document.getElementsByClassName("chart-value");
 
-document.getElementById('expense-table-title').innerHTML = "Expenses";
+// document.getElementById('expense-table-title').innerHTML = "Expenses";
 
 // set the background-color of the Savings button as active
 toggleExpenseSavingModeBtns[0].style.backgroundColor = "#008ae6";
@@ -319,6 +319,7 @@ function fetchYearData(year, endpoint) {
 // fetch expenses for selected date and display on expense table
 async function getAndDisplayExpensesForDate() {
   if (currentMode == mode.EXPENSES && calendar.config.mode == 'single') {
+    document.getElementById('expense-table-title').innerHTML = "Expenses for " + chosenDate;
     document.getElementById("history-bottom-expense-container").style.display = "block";
   }
   var expenseTbody = document.getElementById("expense-table-tbody");

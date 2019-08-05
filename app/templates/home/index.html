@@ -5,14 +5,27 @@
 {% block body %}
 <div class="intro-container">
 
-      <div class="intro-message">
-        <h1>Expense Tracker</h1>
-        <h3>Track expenses
-        &nbsp;-&nbsp; Create budgets
-        &nbsp;-&nbsp; Realize savings
-        &nbsp;-&nbsp; View analytics</h3>
-        <hr class="intro-divider">
-      </div>
+  <div class="intro-message">
+    <h1>Expense Tracker</h1>
+    <h3>Track expenses
+    &nbsp;-&nbsp; Create budgets
+    &nbsp;-&nbsp; Realize savings
+    &nbsp;-&nbsp; View analytics</h3>
+    <hr class="intro-divider">
+  </div>
 
+  <div id="slide-show">
+    <img class="slide-image" src="{{ url_for('static', filename='img/dashboard.png') }}">
+    <img class="slide-image" src="{{ url_for('static', filename='img/savings.png') }}">
+    <img class="slide-image" src="{{ url_for('static', filename='img/expenses.png') }}">
+    <img class="slide-image" src="{{ url_for('static', filename='img/charts.png') }}">
+    <div id="slide-dots-container">
+      <span class="slide-dot" data-index="0"></span>
+      <span class="slide-dot" data-index="1"></span>
+      <span class="slide-dot" data-index="2"></span>
+      <span class="slide-dot" data-index="3"></span>
+    </div>
+  </div>
 </div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}

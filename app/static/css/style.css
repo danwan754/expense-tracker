@@ -12,6 +12,7 @@ body, h1, h2, h3 {
 
 body {
   margin: 0;
+  /* background-color: #e6f7ff; */
 }
 
 
@@ -123,14 +124,51 @@ form {
 
 .intro-message > h3 {
   color: #4da6ff;
+  margin-top: 40px;
 }
 
 .intro-divider {
-    width: 400px;
-    border-top: 1px solid #f8f8f8;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
+  width: 400px;
+  border-top: 1px solid #f8f8f8;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 
+#slide-show {
+  text-align: center;
+  width: 80%;
+  margin: auto;
+  margin-top: 50px;
+  border: 1px black solid;
+  opacity: 0.8;
+  border-radius: 25px;
+  /* background-color: #e6f7ff; */
+}
+
+#slide-dots-container {
+  vertical-align: bottom;
+  margin: auto;
+  margin-bottom: 20px;
+  /* border: 1px black solid; */
+}
+
+.slide-dot {
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  /* background-color: #bbb; */
+  border: solid 2px #bbb;
+  cursor: pointer;
+}
+
+.slide-image {
+  display: none;
+  width: 90%;
+  margin: auto;
+
+}
 /**/
 
 
