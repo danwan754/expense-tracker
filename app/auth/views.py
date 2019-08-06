@@ -6,7 +6,7 @@ from flask_login import login_required, login_user, logout_user
 from datetime import datetime
 
 from . import auth
-from forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm
 from .. import db
 from ..models import User, Budget
 
