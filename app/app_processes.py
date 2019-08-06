@@ -1,4 +1,4 @@
-from models import Expense, Budget
+from .models import Expense, Budget
 from . import db
 
 from datetime import datetime, timedelta, date
