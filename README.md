@@ -1,9 +1,10 @@
 # expense-tracker
 
 Demo:
-
+http://expensetracker.pythonanywhere.com/
 
 This web-app allows the user to create budgets and track all their expenses.
+Built using Flask.
 
 
 ## Features
